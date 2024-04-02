@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class MoverForward : MonoBehaviour
 {
-    [Min(0), SerializeField] private int _speed;
+    [Min(0), SerializeField] private float _speed;
 
     void Update()
     {
