@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Magnifyer : MonoBehaviour
 {
-    [Min(0), SerializeField] private float _speed;
+    [Min(0)] [SerializeField] private float _speed;
 
     void Update()
     {
