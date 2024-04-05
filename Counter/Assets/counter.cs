@@ -11,7 +11,7 @@ public class counter : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(RunCountering(_delay));
+        StartCoroutine(RunCounting(_delay));
     }
 
     private void Update()
@@ -22,7 +22,7 @@ public class counter : MonoBehaviour
         }
     }
 
-    private IEnumerator RunCountering(float delay)
+    private IEnumerator RunCounting(float delay)
     {
         int count = 0;
         var wait = new WaitForSeconds(delay);
