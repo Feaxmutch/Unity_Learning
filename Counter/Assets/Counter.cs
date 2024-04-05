@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Ñounter : MonoBehaviour
+public class Counter : MonoBehaviour
 {
     [SerializeField] private Text _text;
     [SerializeField] private float _delay;
