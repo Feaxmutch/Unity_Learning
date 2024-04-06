@@ -19,7 +19,10 @@ public class Counter : MonoBehaviour
 
     private void Update()
     {
-        _isRunning = Input.GetMouseButtonDown(0) ? !_isRunning : _isRunning;
+        if (Input.GetMouseButtonDown(0))
+        {
+            _isRunning = !_isRunning;
+        }
     }
 
     private IEnumerator RunCounting()
@@ -28,7 +31,7 @@ public class Counter : MonoBehaviour
         {
             DisplayCount();
             yield return _wait;
-            yield return new WaitUntil(() => _isRunning);
+            yield return new WaitWhile(() => _isRunning == false);
             _count++;
         }
     }
