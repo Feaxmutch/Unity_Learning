@@ -2,15 +2,15 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private GameObject _prefab;
+    [SerializeField] private ForwardMover _prefab;
     [Range(0, Degree.Max)] [SerializeField] private float _moveDirection;
 
     public void Spawn()
     {
         Vector3 SpawnPosition = GetSpawnPosition();
-        GameObject gameObject = Instantiate(_prefab, SpawnPosition, transform.rotation);
-        ForwardMover forwardMover = gameObject.GetComponent<ForwardMover>();
-        forwardMover.MoveDirection = _moveDirection;
+        ForwardMover newMover = Instantiate(_prefab);
+        newMover.gameObject.transform.position = SpawnPosition;
+        newMover.MoveDirection = _moveDirection;
     }
 
     private Vector3 GetSpawnPosition()

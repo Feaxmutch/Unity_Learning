@@ -1,12 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnController : MonoBehaviour
 {
     [SerializeField] private float _spawnDelay;
 
-    private List<Spawner> _spawners = new();
+    private Spawner[] _spawners;
 
     private void Start()
     {
@@ -16,12 +15,7 @@ public class SpawnController : MonoBehaviour
 
     private void FindSpawners()
     {
-        GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
-
-        foreach (var spawnPoint in spawnPoints)
-        {
-            _spawners.Add(spawnPoint.GetComponent<Spawner>());
-        }
+        _spawners = FindObjectsOfType<Spawner>();
     }
 
     private IEnumerator DelayedRandomSpawn()
@@ -30,7 +24,7 @@ public class SpawnController : MonoBehaviour
 
         while (true)
         {
-            _spawners[Random.Range(0, _spawners.Count)].Spawn();
+            _spawners[Random.Range(0, _spawners.Length)].Spawn();
             yield return wait;
         }
     }
