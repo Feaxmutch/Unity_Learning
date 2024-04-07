@@ -3,7 +3,7 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private GameObject _prefab;
-    [Range(0,359)] [SerializeField] private float _moveDirection;
+    [Range(0, Degree.Max)] [SerializeField] private float _moveDirection;
 
     public void Spawn()
     {

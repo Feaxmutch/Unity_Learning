@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class ForwardMover : MonoBehaviour
 {
-    [Range(0, 359)] [SerializeField] private float _moveDirection;
+    [Range(0, Degree.Max)] [SerializeField] private float _moveDirection;
     [Min(0)] [SerializeField] public float _speed;
 
     private Animator _animator;
 
-    public float MoveDirection { get => _moveDirection; set => _moveDirection = Mathf.Clamp(value, 0, 359); }
+    public float MoveDirection { get => _moveDirection; set => _moveDirection = Mathf.Clamp(value, 0, Degree.Max); }
 
     private void Update()
     {
