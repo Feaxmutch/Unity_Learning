@@ -7,10 +7,10 @@ public class Spawner : MonoBehaviour
 
     public void Spawn()
     {
-        Vector3 SpawnPosition = GetSpawnPosition();
+        Vector3 spawnPosition = GetSpawnPosition();
         ForwardMover newMover = Instantiate(_prefab);
-        newMover.gameObject.transform.position = SpawnPosition;
-        newMover.MoveDirection = _moveDirection;
+        newMover.gameObject.transform.position = spawnPosition;
+        newMover.SetDirection(_moveDirection);
     }
 
     private Vector3 GetSpawnPosition()
