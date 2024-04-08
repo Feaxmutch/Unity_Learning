@@ -26,11 +26,23 @@ public class ForwardMover : MonoBehaviour
     public void SetDirection(float moveDirection)
     {
         MoveDirection = moveDirection;
+        RotateByDirection();
+    }
+
+    public void SetDirection(Vector3 target)
+    {
+        transform.LookAt(target);
+        MoveDirection = transform.rotation.eulerAngles.y;
+        RotateByDirection();
     }
 
     private void Move()
     {
-        transform.rotation = Quaternion.Euler(Vector3.up * MoveDirection);
         transform.Translate(Vector3.forward * _speed * Time.deltaTime);
+    }
+
+    private void RotateByDirection()
+    {
+        transform.rotation = Quaternion.Euler(Vector3.up * MoveDirection);
     }
 }
