@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class SpawnController : MonoBehaviour
+public class SpawnTimer : MonoBehaviour
 {
     [SerializeField] private float _spawnDelay;
 

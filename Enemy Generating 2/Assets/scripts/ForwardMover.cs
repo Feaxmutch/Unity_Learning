@@ -23,6 +23,11 @@ public class ForwardMover : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
+    private void OnValidate()
+    {
+        RotateByDirection();
+    }
+
     public void SetDirection(float moveDirection)
     {
         MoveDirection = moveDirection;

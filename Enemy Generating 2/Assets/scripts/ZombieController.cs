@@ -14,6 +14,6 @@ public class ZombieController : MonoBehaviour
 
     private void Update()
     {
-        _mover.SetDirection(Vector3.zero);
+        _mover.SetDirection(_target.transform.position);
     }
 }
