@@ -17,7 +17,7 @@ public class TargetFolower : MonoBehaviour
         _mover.SetDirection(_target.position);
     }
 
-    public void SetTarget(Transform target)
+    public void Init(Transform target)
     {
         _target = target;
     }

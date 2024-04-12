@@ -12,15 +12,15 @@ public class ForwardMover : MonoBehaviour
 
     private float MoveDirection { get => _moveDirection; set => _moveDirection = Mathf.Clamp(value, 0, Degree.Max); }
 
+    private void Start()
+    {
+        _animator = GetComponent<Animator>();
+    }
+
     private void Update()
     {
         Move();
         _animator.SetFloat(Speed, _speed);
-    }
-
-    private void Start()
-    {
-        _animator = GetComponent<Animator>();
     }
 
     private void OnValidate()

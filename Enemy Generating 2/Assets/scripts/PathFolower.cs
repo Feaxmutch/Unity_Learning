@@ -29,6 +29,6 @@ public class PathFolower : MonoBehaviour
     private void SwichPoint(int pointIndex)
     {
         _currentPoint = _pathPoints[Mathf.Clamp(pointIndex, 0, _pathPoints.Count - 1)];
-        _targetFolower.SetTarget(_currentPoint.gameObject.transform);
+        _targetFolower.Init(_currentPoint.gameObject.transform);
     }
 }

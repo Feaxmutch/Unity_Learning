@@ -8,9 +8,8 @@ public class Spawner : MonoBehaviour
     public void Spawn()
     {
         Vector3 spawnPosition = GetSpawnPosition();
-        TargetFolower targetFolower = Instantiate(_prefab);
-        targetFolower.gameObject.transform.position = spawnPosition;
-        targetFolower.SetTarget(_target);
+        TargetFolower targetFolower = Instantiate(_prefab, spawnPosition, Quaternion.Euler(Vector3.zero));
+        targetFolower.Init(_target);
     }
 
     private Vector3 GetSpawnPosition()
