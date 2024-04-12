@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnTimer : MonoBehaviour
+public class Spawner : MonoBehaviour
 {
     [SerializeField] private float _spawnDelay;
-    [SerializeField] private List<Spawner> _spawners;
+    [SerializeField] private List<SpawnPoint> _spawnPoints;
 
     private void Start()
     {
@@ -18,7 +18,7 @@ public class SpawnTimer : MonoBehaviour
 
         while (true)
         {
-            _spawners[Random.Range(0, _spawners.Count)].Spawn();
+            _spawnPoints[Random.Range(0, _spawnPoints.Count)].Spawn();
             yield return wait;
         }
     }

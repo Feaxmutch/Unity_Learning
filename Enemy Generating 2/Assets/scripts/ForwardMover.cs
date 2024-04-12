@@ -10,7 +10,11 @@ public class ForwardMover : MonoBehaviour
 
     private Animator _animator;
 
-    private float MoveDirection { get => _moveDirection; set => _moveDirection = Mathf.Clamp(value, 0, Degree.Max); }
+    private float MoveDirection 
+    { 
+        get => _moveDirection; 
+        set => _moveDirection = Mathf.Clamp(value, 0, Degree.Max); 
+    }
 
     private void Start()
     {

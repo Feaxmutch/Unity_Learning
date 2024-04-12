@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Spawner : MonoBehaviour
+public class SpawnPoint : MonoBehaviour
 {
     [SerializeField] private TargetFolower _prefab;
     [SerializeField] private Transform _target;
