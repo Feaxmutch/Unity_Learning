@@ -21,8 +21,7 @@ public class PathFolower : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out PathPoint pathPoint) && pathPoint == _currentPoint)
         {
-            _pointIndex++;
-            _pointIndex = _pointIndex < _pathPoints.Count ? _pointIndex : 0;
+            _pointIndex = ++_pointIndex % _pathPoints.Count;
             SwichPoint(_pointIndex);
         }
     }
@@ -30,6 +29,6 @@ public class PathFolower : MonoBehaviour
     private void SwichPoint(int pointIndex)
     {
         _currentPoint = _pathPoints[Mathf.Clamp(pointIndex, 0, _pathPoints.Count - 1)];
-        _targetFolower.SetTarget(_currentPoint.gameObject);
+        _targetFolower.SetTarget(_currentPoint.gameObject.transform);
     }
 }

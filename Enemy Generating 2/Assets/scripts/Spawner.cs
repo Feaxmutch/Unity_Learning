@@ -3,7 +3,7 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private TargetFolower _prefab;
-    [SerializeField] private GameObject _target;
+    [SerializeField] private Transform _target;
 
     public void Spawn()
     {
@@ -11,7 +11,6 @@ public class Spawner : MonoBehaviour
         TargetFolower targetFolower = Instantiate(_prefab);
         targetFolower.gameObject.transform.position = spawnPosition;
         targetFolower.SetTarget(_target);
-        
     }
 
     private Vector3 GetSpawnPosition()

@@ -11,18 +11,22 @@ public class InstantiateBulletsShooting : MonoBehaviour
 
     public Transform ObjectToShoot { get; private set; }
 
-    private void Start()
+    private void OnEnable()
     {
         StartCoroutine(_shootingWorker());
     }
+
+    private void OnDisable()
+    {
+        StopCoroutine(_shootingWorker());
+    }
+
     IEnumerator _shootingWorker()
     {
-        bool isWork = enabled;
-
-        while (isWork)
+        while (enabled)
         {
-            var direction = (ObjectToShoot.position - transform.position).normalized;
-            var NewBullet = Instantiate(_prefab, transform.position + direction, Quaternion.identity);
+            Vector3 direction = (ObjectToShoot.position - transform.position).normalized;
+            GameObject NewBullet = Instantiate(_prefab, transform.position + direction, Quaternion.identity);
 
             NewBullet.GetComponent<Rigidbody>().transform.up = direction;
             NewBullet.GetComponent<Rigidbody>().velocity = direction * Number;
@@ -30,4 +34,6 @@ public class InstantiateBulletsShooting : MonoBehaviour
             yield return new WaitForSeconds(_timeWaitShooting);
         }
     }
+
+    
 }

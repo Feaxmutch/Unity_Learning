@@ -1,21 +1,15 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnTimer : MonoBehaviour
 {
     [SerializeField] private float _spawnDelay;
-
-    private Spawner[] _spawners;
+    [SerializeField] private List<Spawner> _spawners;
 
     private void Start()
     {
-        FindSpawners();
         StartCoroutine(DelayedRandomSpawn());
-    }
-
-    private void FindSpawners()
-    {
-        _spawners = FindObjectsOfType<Spawner>();
     }
 
     private IEnumerator DelayedRandomSpawn()
@@ -24,7 +18,7 @@ public class SpawnTimer : MonoBehaviour
 
         while (true)
         {
-            _spawners[Random.Range(0, _spawners.Length)].Spawn();
+            _spawners[Random.Range(0, _spawners.Count)].Spawn();
             yield return wait;
         }
     }

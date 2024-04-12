@@ -28,12 +28,6 @@ public class ForwardMover : MonoBehaviour
         RotateByDirection();
     }
 
-    public void SetDirection(float moveDirection)
-    {
-        MoveDirection = moveDirection;
-        RotateByDirection();
-    }
-
     public void SetDirection(Vector3 target)
     {
         transform.LookAt(target);

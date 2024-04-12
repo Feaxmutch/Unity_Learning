@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(ForwardMover))]
 public class TargetFolower : MonoBehaviour
 {
-    [SerializeField] private GameObject _target;
+    [SerializeField] private Transform _target;
 
     private ForwardMover _mover;
 
@@ -14,10 +14,10 @@ public class TargetFolower : MonoBehaviour
 
     private void Update()
     {
-        _mover.SetDirection(_target.transform.position);
+        _mover.SetDirection(_target.position);
     }
 
-    public void SetTarget(GameObject target)
+    public void SetTarget(Transform target)
     {
         _target = target;
     }

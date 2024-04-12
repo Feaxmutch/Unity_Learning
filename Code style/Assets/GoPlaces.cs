@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class GoPlaces : MonoBehaviour
 {
+    [SerializeField] private Transform _placesParent;
+
     private Transform[] _places;
 
     public float Float { get; private set; } //Speed?
-
-    public Transform AllPlacesPoint { get; private set; }
 
     private void Start()
     {
@@ -35,11 +35,11 @@ public class GoPlaces : MonoBehaviour
 
     private void InitializePlaces()
     {
-        _places = new Transform[AllPlacesPoint.childCount];
+        _places = new Transform[_placesParent.childCount];
 
         for (int i = 0; i < _places.Length; i++)
         {
-            _places[i] = AllPlacesPoint.GetChild(i).GetComponent<Transform>();
+            _places[i] = _placesParent.GetChild(i).GetComponent<Transform>();
         }
     }
 }
