@@ -15,17 +15,12 @@ public class Shooter : MonoBehaviour
         StartCoroutine(Shooting());
     }
 
-    private void OnDisable()
-    {
-        StopAllCoroutines();
-    }
-
-    IEnumerator Shooting()
+    private IEnumerator Shooting()
     {
         while (enabled)
         {
-            var direction = (_target.position - transform.position).normalized;
-            var newBullet = Instantiate(_bullet, transform.position + direction, Quaternion.identity);
+            Vector3 direction = (_target.position - transform.position).normalized;
+            Rigidbody newBullet = Instantiate(_bullet, transform.position + direction, Quaternion.identity);
             newBullet.transform.up = direction;
             newBullet.velocity = direction * _bulletSpeed;
 

@@ -13,18 +13,13 @@ public class PlacesFolower : MonoBehaviour
     {
         for (int i = 0; i < _placesParent.childCount; i++)
         {
-            _places.Add(_placesParent.GetChild(i).GetComponent<Transform>());
+            _places.Add(_placesParent.GetChild(i));
         }
     }
 
     private void OnEnable()
     {
         StartCoroutine(Moving());
-    }
-
-    private void OnDisable()
-    {
-        StopAllCoroutines();
     }
 
     private IEnumerator Moving()
