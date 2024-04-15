@@ -31,14 +31,13 @@ public class PlacesFolower : MonoBehaviour
     {
         while (enabled)
         {
-            for (int i = 0; i < _places.Count; i++)
+            foreach (var place in _places)
             {
-                var currentPlace = _places[i];
-                RotateToPlace(currentPlace);
+                RotateToPlace(place);
 
-                while (transform.position != currentPlace.position)
+                while (transform.position != place.position)
                 {
-                    transform.position = Vector3.MoveTowards(transform.position, currentPlace.position, _speed * Time.deltaTime);
+                    transform.position = Vector3.MoveTowards(transform.position, place.position, _speed * Time.deltaTime);
                     yield return null;
                 }
             }
