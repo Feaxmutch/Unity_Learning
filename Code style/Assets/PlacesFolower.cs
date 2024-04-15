@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
-public class GoPlaces : MonoBehaviour
+public class PlacesFolower : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private Transform _placesParent;
@@ -33,8 +33,8 @@ public class GoPlaces : MonoBehaviour
         {
             for (int i = 0; i < _places.Count; i++)
             {
-                RotateToPlace(i);
                 var currentPlace = _places[i];
+                RotateToPlace(i);
 
                 while (transform.position != currentPlace.position)
                 {
