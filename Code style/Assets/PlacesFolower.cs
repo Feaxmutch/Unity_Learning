@@ -43,7 +43,7 @@ public class PlacesFolower : MonoBehaviour
 
     public void RotateToPlace(Transform place)
     {
-        var placePosition = place.position;
+        Vector3 placePosition = place.position;
         transform.forward = placePosition - transform.position;
     }
 }
