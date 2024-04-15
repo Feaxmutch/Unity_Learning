@@ -34,7 +34,7 @@ public class PlacesFolower : MonoBehaviour
             for (int i = 0; i < _places.Count; i++)
             {
                 var currentPlace = _places[i];
-                RotateToPlace(i);
+                RotateToPlace(currentPlace);
 
                 while (transform.position != currentPlace.position)
                 {
@@ -47,9 +47,9 @@ public class PlacesFolower : MonoBehaviour
         }
     }
 
-    public void RotateToPlace(int placeIndex)
+    public void RotateToPlace(Transform place)
     {
-        var placePosition = _places[placeIndex].position;
+        var placePosition = place.position;
         transform.forward = placePosition - transform.position;
     }
 }
