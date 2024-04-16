@@ -10,21 +10,22 @@ public class Shooter : MonoBehaviour
     [SerializeField] private float _roundPerMinute;
     [SerializeField] private Transform _target;
 
-    private void OnEnable()
+    private void Start()
     {
         StartCoroutine(Shooting());
     }
 
     private IEnumerator Shooting()
     {
+        WaitForSeconds shootDelay = new(SecondsInMinute / _roundPerMinute);
+
         while (enabled)
         {
             Vector3 direction = (_target.position - transform.position).normalized;
             Rigidbody newBullet = Instantiate(_bullet, transform.position + direction, Quaternion.identity);
             newBullet.transform.up = direction;
             newBullet.velocity = direction * _bulletSpeed;
-
-            yield return new WaitForSeconds(SecondsInMinute / _roundPerMinute);
+            yield return shootDelay;
         }
     }
 

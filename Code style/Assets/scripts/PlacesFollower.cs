@@ -2,23 +2,22 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
-public class PlacesFolower : MonoBehaviour
+public class PlacesFollower : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private Transform _placesParent;
 
-    private List<Transform> _places = new();
+    private Transform[] _places;
 
     private void Start()
     {
+        _places = new Transform[_placesParent.childCount];
+
         for (int i = 0; i < _placesParent.childCount; i++)
         {
-            _places.Add(_placesParent.GetChild(i));
+            _places[i] = (_placesParent.GetChild(i));
         }
-    }
 
-    private void OnEnable()
-    {
         StartCoroutine(Moving());
     }
 
