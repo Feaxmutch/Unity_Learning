@@ -120,6 +120,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     - _ofset: 1
+    - _scale: 1
     - _smoothness: 0
     m_Colors:
     - _BaseColor: {r: 0.754717, g: 0.754717, b: 0.754717, a: 1}

@@ -1683,10 +1683,10 @@
     "m_Guid": {
         "m_GuidSerialized": "c17d4bb2-1d9d-46c1-920c-1c77ddfe716e"
     },
-    "m_Name": "ofset",
+    "m_Name": "scale",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "ofset",
-    "m_DefaultReferenceName": "_ofset",
+    "m_RefNameGeneratedByDisplayName": "scale",
+    "m_DefaultReferenceName": "_scale",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
@@ -2324,7 +2324,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "e03af455ff5f4c589314a2985e79132c",
     "m_Id": 0,
-    "m_DisplayName": "ofset",
+    "m_DisplayName": "scale",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
