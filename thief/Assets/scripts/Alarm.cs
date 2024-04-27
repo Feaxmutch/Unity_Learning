@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class Signalization : MonoBehaviour
+public class Alarm : MonoBehaviour
 {
     [SerializeField] private AudioClip _clip;
 
