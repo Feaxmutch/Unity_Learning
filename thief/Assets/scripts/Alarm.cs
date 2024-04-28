@@ -5,7 +5,11 @@ using UnityEngine;
 public class Alarm : MonoBehaviour
 {
     [SerializeField] private AudioClip _clip;
+    [SerializeField] private float _volumeSpeed;
+    [SerializeField] private float _maxVolume;
 
+    private float _minVolume = 0;
+    
     private AudioSource _audioSource;
 
     private void Start()
@@ -38,7 +42,7 @@ public class Alarm : MonoBehaviour
     {
         while (enabled)
         {
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, 0, Time.deltaTime * 0.01f);
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _minVolume, Time.deltaTime * _volumeSpeed);
             yield return null;
         }
     }
@@ -47,7 +51,7 @@ public class Alarm : MonoBehaviour
     {
         while (enabled)
         {
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, 0.3f, Time.deltaTime * 0.01f);
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _maxVolume, Time.deltaTime * _volumeSpeed);
             yield return null;
         }
     }

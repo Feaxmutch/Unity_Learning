@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 [RequireComponent(typeof(PathFolower))]
 [RequireComponent(typeof(Animator))]
@@ -19,12 +18,6 @@ public class Thief : MonoBehaviour
         _animator = GetComponent<Animator>();
         SetSpeed(_movementSpeed, _rotationSpeed);
         _pathFolower.StartMoving(false, 0);
-    }
-
-    
-    private void Update()
-    {
-        
     }
 
     private void SetSpeed(float movement, float rotation)

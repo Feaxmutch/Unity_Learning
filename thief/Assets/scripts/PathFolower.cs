@@ -18,9 +18,18 @@ public class PathFolower : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        for (int i = 0; i < _paths.Count; i++)
+        {
+            _paths[i].PathEnded -= StopMoving;
+        }
+    }
+
     public void StartMoving(bool isLooping, int pathIndex)
     {
         _paths[pathIndex].ResetPoint();
+        _isMoving = true;
         StartCoroutine(Moving(isLooping, pathIndex));
     }
 
@@ -42,7 +51,6 @@ public class PathFolower : MonoBehaviour
     private IEnumerator Moving(bool isLooping, int pathIndex)
     {
         _paths[pathIndex].IsLooping = isLooping;
-        _isMoving = true;
 
         while (_isMoving)
         {

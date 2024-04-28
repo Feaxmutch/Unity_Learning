@@ -5,9 +5,9 @@ using UnityEngine.Events;
 public class Path : MonoBehaviour
 {
     [SerializeField] private List<Transform> _pathPoints;
-
+    
     public event UnityAction PathEnded;
-
+    
     private int _pointIndex;
 
     public Transform CurrentPoint { get; private set; }
@@ -30,6 +30,7 @@ public class Path : MonoBehaviour
         if (_pointIndex == _pathPoints.Count - 1 && IsLooping == false)
         {
             PathEnded?.Invoke();
+            return;
         }
 
         _pointIndex++;
@@ -45,8 +46,6 @@ public class Path : MonoBehaviour
 
         SetPoint();
     }
-
-    
 
     private void SetPoint()
     {
