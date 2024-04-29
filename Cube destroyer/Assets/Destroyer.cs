@@ -92,6 +92,6 @@ public class Destroyer : MonoBehaviour
             childs[xPosition][yPosition][zPosition] = newObject;
         }
 
-        GetComponent<Rigidbody>().AddExplosionForce(5000, gameObject.transform.position, 1000);
+        GetComponent<Rigidbody>().AddExplosionForce(5000, transform.position, 1000);
     }
 }

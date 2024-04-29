@@ -4523,7 +4523,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _clip: {fileID: 8300000, guid: c43b5d4b62435d149919fcd353651756, type: 3}
-  _maxVolume: 0.3
+  _maxVolume: 0.2
   _minVolume: 0
 --- !u!82 &1367821326
 AudioSource:
@@ -4633,7 +4633,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5020504c6b47333418e3a7cd3e5d3c85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _volumeSpeed: 0.01
+  _volumeSpeed: 0.03
 --- !u!1 &1486670075
 GameObject:
   m_ObjectHideFlags: 0
