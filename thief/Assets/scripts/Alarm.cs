@@ -5,10 +5,8 @@ using UnityEngine;
 public class Alarm : MonoBehaviour
 {
     [SerializeField] private AudioClip _clip;
-    [SerializeField] private float _volumeSpeed;
     [SerializeField] private float _maxVolume;
-
-    private float _minVolume = 0;
+    [SerializeField] private float _minVolume;
     
     private AudioSource _audioSource;
 
@@ -16,42 +14,27 @@ public class Alarm : MonoBehaviour
     {
         _audioSource = GetComponent<AudioSource>();
         _audioSource.clip = _clip;
-        _audioSource.volume = 0;
+        _audioSource.volume = _minVolume;
         _audioSource.Play();
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void InterpolateVolume(float interpolatingSpeed)
     {
-        if (other.TryGetComponent(out Thief thief))
-        {
-            StopAllCoroutines();
-            StartCoroutine(AlarmVolumeUp());
-        }
+        StartCoroutine(InterpolatingVolume(interpolatingSpeed));
     }
 
-    private void OnTriggerExit(Collider other)
+    public void StopInterpolating()
     {
-        if (other.TryGetComponent(out Thief thief))
-        {
-            StopAllCoroutines();
-            StartCoroutine(AlarmVolumeDown());
-        }
+        StopAllCoroutines();
     }
 
-    private IEnumerator AlarmVolumeDown()
+    private IEnumerator InterpolatingVolume(float interpolatingSpeed)
     {
+        float targetVolume = interpolatingSpeed > 0 ? _maxVolume : _minVolume;
+
         while (enabled)
         {
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _minVolume, Time.deltaTime * _volumeSpeed);
-            yield return null;
-        }
-    }
-
-    private IEnumerator AlarmVolumeUp()
-    {
-        while (enabled)
-        {
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _maxVolume, Time.deltaTime * _volumeSpeed);
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, targetVolume, Time.deltaTime * interpolatingSpeed);
             yield return null;
         }
     }
