@@ -20,40 +20,29 @@ public class Alarm : MonoBehaviour
 
     public void InterpolateVolume(float interpolatingSpeed)
     {
-        if (_interpolatingVolume == null)
-        {
-            _interpolatingVolume = StartCoroutine(InterpolatingVolume(interpolatingSpeed));
-        }
-    }
-
-    public void StopInterpolating()
-    {
         if (_interpolatingVolume != null)
         {
             StopCoroutine(_interpolatingVolume);
-            _interpolatingVolume = null;
         }
+
+        _interpolatingVolume = StartCoroutine(InterpolatingVolume(interpolatingSpeed));
     }
 
     private IEnumerator InterpolatingVolume(float interpolatingSpeed)
     {
         float targetVolume = interpolatingSpeed > 0 ? _maxVolume : _minVolume;
         interpolatingSpeed = Mathf.Abs(interpolatingSpeed);
+        _audioSource.Play();
 
-        while (enabled)
+        while (_audioSource.volume != targetVolume)
         {
             _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, targetVolume, Time.deltaTime * interpolatingSpeed);
-
-            if (_audioSource.volume > _minVolume && _audioSource.isPlaying == false)
-            {
-                _audioSource.Play();
-            }
-            else if (_audioSource.volume == _minVolume && _audioSource.isPlaying)
-            {
-                _audioSource.Stop();
-            }
-
             yield return null;
+        }
+
+        if (_audioSource.volume == _minVolume)
+        {
+            _audioSource.Stop();
         }
     }
 }

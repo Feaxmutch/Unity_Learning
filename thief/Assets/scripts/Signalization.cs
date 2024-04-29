@@ -16,7 +16,6 @@ public class Signalization : MonoBehaviour
     {
         if (other.TryGetComponent(out Thief thief))
         {
-            _alarm.StopInterpolating();
             _alarm.InterpolateVolume(_volumeSpeed);
         }
     }
@@ -25,7 +24,6 @@ public class Signalization : MonoBehaviour
     {
         if (other.TryGetComponent(out Thief thief))
         {
-            _alarm.StopInterpolating();
             _alarm.InterpolateVolume(_volumeSpeed * -1);
         }
     }

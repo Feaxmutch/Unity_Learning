@@ -36,7 +36,7 @@ public class Destroyer : MonoBehaviour
 
     private void OnMouseDown()
     {
-        SpawnChilds(27, 3);
+        SpawnChilds(8, 2);
         Destroy(gameObject);
     }
 
@@ -84,14 +84,14 @@ public class Destroyer : MonoBehaviour
 
             GameObject newObject = Instantiate(gameObject);
             newObject.transform.localScale = (gameObject.transform.localScale / positionsInVector);
-            float xOffset = xPosition * ((_mesh.bounds.size.x * gameObject.transform.localScale.x) / positionsInVector) - (_mesh.bounds.size.x * gameObject.transform.localScale.x) / 2 + ((_mesh.bounds.size.x * gameObject.transform.localScale.x) / (positionsInVector * 2));
-            float yOffset = yPosition * ((_mesh.bounds.size.y * gameObject.transform.localScale.y) / positionsInVector) - (_mesh.bounds.size.y * gameObject.transform.localScale.y) / 2 + ((_mesh.bounds.size.y * gameObject.transform.localScale.y) / (positionsInVector * 2));
-            float zOffset = zPosition * ((_mesh.bounds.size.z * gameObject.transform.localScale.z) / positionsInVector) - (_mesh.bounds.size.z * gameObject.transform.localScale.z) / 2 + ((_mesh.bounds.size.z * gameObject.transform.localScale.z) / (positionsInVector * 2));
+            Vector3 finalScale = new Vector3(_mesh.bounds.size.x * transform.localScale.x, _mesh.bounds.size.y * transform.localScale.y, _mesh.bounds.size.z * transform.localScale.z);
+            float xOffset = xPosition * (finalScale.x / positionsInVector) - finalScale.x / 2 + (finalScale.x / (positionsInVector * 2));
+            float yOffset = yPosition * (finalScale.x / positionsInVector) - finalScale.x / 2 + (finalScale.x / (positionsInVector * 2));
+            float zOffset = zPosition * (finalScale.x / positionsInVector) - finalScale.x / 2 + (finalScale.x / (positionsInVector * 2));
             Vector3 positionOffset = new(xOffset, yOffset, zOffset);
             newObject.transform.position += positionOffset;
             childs[xPosition][yPosition][zPosition] = newObject;
+            newObject.GetComponent<Rigidbody>().AddExplosionForce(500, transform.position, 1);
         }
-
-        GetComponent<Rigidbody>().AddExplosionForce(5000, transform.position, 1000);
     }
 }
