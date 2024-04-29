@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Alarm))]
-public class Signalization : MonoBehaviour
+public class Detector : MonoBehaviour
 {
     [SerializeField] private float _volumeSpeed;
     
