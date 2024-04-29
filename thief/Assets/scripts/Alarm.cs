@@ -32,7 +32,11 @@ public class Alarm : MonoBehaviour
     {
         float targetVolume = interpolatingSpeed > 0 ? _maxVolume : _minVolume;
         interpolatingSpeed = Mathf.Abs(interpolatingSpeed);
-        _audioSource.Play();
+
+        if (_audioSource.isPlaying == false)
+        {
+            _audioSource.Play();
+        }
 
         while (_audioSource.volume != targetVolume)
         {
