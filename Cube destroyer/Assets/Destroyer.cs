@@ -1,51 +1,31 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-[RequireComponent(typeof(MeshRenderer))]
-[RequireComponent(typeof(BoxCollider))]
+[RequireComponent(typeof(MeshFilter))]
 public class Destroyer : MonoBehaviour
 {
-    private MeshRenderer _meshRenderer;
-    private Mesh _mesh;
-    private Color _defaultColor;
+    [SerializeField] private int childsCount;
+    [SerializeField] private int childsInVector;
+    [SerializeField] private float _defaultScale;
 
-    private void Start()
-    {
-        
-    }
+    private Mesh _mesh;
 
     private void Awake()
     {
         MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
-        _meshRenderer = GetComponent<MeshRenderer>();
-        _defaultColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
-        _meshRenderer.material.color = _defaultColor;
         _mesh = meshFilter.mesh;
-    }
-
-    private void OnMouseEnter()
-    {
-        _meshRenderer.material.color = _defaultColor - new Color(0.1f, 0.1f, 0.1f);
-    }
-
-    private void OnMouseExit()
-    {
-        _meshRenderer.material.color = _defaultColor;
     }
 
     private void OnMouseDown()
     {
-        SpawnChilds(8, 2);
-        Destroy(gameObject);
+        if (Random.Range(0, _defaultScale) < transform.localScale.x) //x - случайно выбранный вектор
+        {
+            Explose(childsCount, childsInVector);
+            Destroy(gameObject);
+        }
     }
 
-    private void OnDestroy()
-    {
-        
-    }
-
-    private void SpawnChilds(int count, int positionsInVector)
+    private void Explose(int count, int positionsInVector)
     {
         List<List<List<GameObject>>> childs = new();
         int numberOfVectors = 3;
@@ -91,7 +71,7 @@ public class Destroyer : MonoBehaviour
             Vector3 positionOffset = new(xOffset, yOffset, zOffset);
             newObject.transform.position += positionOffset;
             childs[xPosition][yPosition][zPosition] = newObject;
-            newObject.GetComponent<Rigidbody>().AddExplosionForce(500, transform.position, 1);
+            newObject.GetComponent<Rigidbody>().AddExplosionForce(500, transform.position + (transform.position - newObject.transform.position), 100);
         }
     }
 }
