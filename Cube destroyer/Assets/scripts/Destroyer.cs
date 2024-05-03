@@ -6,7 +6,7 @@ public class Destroyer : MonoBehaviour
 {
     [SerializeField] private int childsCount;
     [SerializeField] private int childsInVector;
-    [SerializeField] private float _defaultScale;
+    [SerializeField] private float destroyChance;
 
     private Mesh _mesh;
 
@@ -14,11 +14,12 @@ public class Destroyer : MonoBehaviour
     {
         MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
         _mesh = meshFilter.mesh;
+        destroyChance /= 2;
     }
 
     private void OnMouseDown()
     {
-        if (Random.Range(0, _defaultScale) < transform.localScale.x) //x - случайно выбранный вектор
+        if (Random.Range(0f, 1f) < destroyChance)
         {
             Explose(childsCount, childsInVector);
             Destroy(gameObject);
