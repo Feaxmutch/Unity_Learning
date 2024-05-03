@@ -6,28 +6,29 @@ using UnityEngine;
 public class Destroyer : MonoBehaviour
 {
     [SerializeField] private int childsInVector;
-    [SerializeField] private float destroyChance;
+    [SerializeField] private float _destroyChance;
     [SerializeField] private float _explosionForce; 
     [SerializeField] private float _explosionRadius; 
 
-    private int minCildsCount = 2;
-    private int maxCildsCount = 6;
-    private int childsCount;
+    private int _minCildsCount = 2;
+    private int _maxCildsCount = 6;
+    private int _childsCount;
+    private int _clildsScaleDevide = 2;
     private Mesh _mesh;
 
     private void Awake()
     {
         MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
         _mesh = meshFilter.mesh;
-        destroyChance /= 2;
+        _destroyChance /= _clildsScaleDevide;
     }
 
     private void OnMouseDown()
     {
-        if (Random.Range(0f, 1f) < destroyChance)
+        if (Random.Range(0f, 1f) < _destroyChance)
         {
-            childsCount = Random.Range(minCildsCount, maxCildsCount + 1);
-            Explose(childsCount, childsInVector);
+            _childsCount = Random.Range(_minCildsCount, _maxCildsCount + 1);
+            Explose(_childsCount, childsInVector);
         }
 
         Destroy(gameObject);
