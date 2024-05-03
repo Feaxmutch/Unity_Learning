@@ -708,6 +708,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   childsInVector: 2
   destroyChance: 2
+  _explosionForce: 500
+  _explosionRadius: 100
 --- !u!114 &1640034980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -794,6 +796,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   childsInVector: 2
   destroyChance: 2
+  _explosionForce: 500
+  _explosionRadius: 100
 --- !u!114 &1849343813
 MonoBehaviour:
   m_ObjectHideFlags: 0

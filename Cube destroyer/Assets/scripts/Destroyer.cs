@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(MeshFilter))]
 public class Destroyer : MonoBehaviour
 {
     [SerializeField] private int childsInVector;
     [SerializeField] private float destroyChance;
+    [SerializeField] private float _explosionForce; 
+    [SerializeField] private float _explosionRadius; 
 
     private int minCildsCount = 2;
     private int maxCildsCount = 6;
@@ -51,9 +54,9 @@ public class Destroyer : MonoBehaviour
             }
         }
 
-        int xPosition = 0;
-        int yPosition = 0;
-        int zPosition = 0;
+        int xPosition = default;
+        int yPosition = default;
+        int zPosition = default;
 
         for (int i = 0; i < count; i++)
         {
@@ -69,14 +72,17 @@ public class Destroyer : MonoBehaviour
 
             GameObject newObject = Instantiate(gameObject);
             newObject.transform.localScale = (gameObject.transform.localScale / positionsInVector);
-            Vector3 finalScale = new Vector3(_mesh.bounds.size.x * transform.localScale.x, _mesh.bounds.size.y * transform.localScale.y, _mesh.bounds.size.z * transform.localScale.z);
-            float xOffset = xPosition * (finalScale.x / positionsInVector) - finalScale.x / 2 + (finalScale.x / (positionsInVector * 2));
-            float yOffset = yPosition * (finalScale.x / positionsInVector) - finalScale.x / 2 + (finalScale.x / (positionsInVector * 2));
-            float zOffset = zPosition * (finalScale.x / positionsInVector) - finalScale.x / 2 + (finalScale.x / (positionsInVector * 2));
+            float xScale = _mesh.bounds.size.x * transform.localScale.x;
+            float yScale = _mesh.bounds.size.y * transform.localScale.y;
+            float zScale = _mesh.bounds.size.z * transform.localScale.z;
+            float xOffset = xPosition * (xScale / positionsInVector) - xScale / 2 + (xScale / (positionsInVector * 2));
+            float yOffset = yPosition * (yScale / positionsInVector) - yScale / 2 + (yScale / (positionsInVector * 2));
+            float zOffset = zPosition * (zScale / positionsInVector) - zScale / 2 + (zScale / (positionsInVector * 2));
             Vector3 positionOffset = new(xOffset, yOffset, zOffset);
             newObject.transform.position += positionOffset;
             childs[xPosition][yPosition][zPosition] = newObject;
-            newObject.GetComponent<Rigidbody>().AddExplosionForce(500, transform.position + (transform.position - newObject.transform.position), 100);
+            Vector3 explosingPoint = transform.position + (transform.position - newObject.transform.position);
+            newObject.GetComponent<Rigidbody>().AddExplosionForce(_explosionForce, explosingPoint, _explosionRadius);
         }
     }
 }
