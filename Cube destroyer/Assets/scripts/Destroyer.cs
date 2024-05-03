@@ -4,10 +4,12 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 public class Destroyer : MonoBehaviour
 {
-    [SerializeField] private int childsCount;
     [SerializeField] private int childsInVector;
     [SerializeField] private float destroyChance;
 
+    private int minCildsCount = 2;
+    private int maxCildsCount = 6;
+    private int childsCount;
     private Mesh _mesh;
 
     private void Awake()
@@ -21,9 +23,11 @@ public class Destroyer : MonoBehaviour
     {
         if (Random.Range(0f, 1f) < destroyChance)
         {
+            childsCount = Random.Range(minCildsCount, maxCildsCount + 1);
             Explose(childsCount, childsInVector);
-            Destroy(gameObject);
         }
+
+        Destroy(gameObject);
     }
 
     private void Explose(int count, int positionsInVector)
