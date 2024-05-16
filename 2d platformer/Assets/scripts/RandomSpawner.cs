@@ -12,12 +12,6 @@ public class RandomSpawner : MonoBehaviour
         StartCoroutine(Spawning(_spawnDelay));
     }
 
-    
-    void Update()
-    {
-        
-    }
-
     private IEnumerator Spawning(float spawnDelay)
     {
         WaitForSeconds wait = new(spawnDelay);
