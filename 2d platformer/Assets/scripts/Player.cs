@@ -1,18 +1,48 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Movement))]
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class Player : MonoBehaviour , IDamageble
 {
+    private const string ParametrIsFalling = "IsFalling";
+
     [SerializeField] private int _health;
-    [SerializeField] private ContactFilter2D _contactFilter2D;
+    [SerializeField] private GroundDetector _groundDetector;
 
     private Movement _movement;
+    private Animator _animator;
+    private Dictionary<KeyCode, string> _animatorKeyParametrs = new();
 
-    private bool OnGround { get; set; }
+    private KeyCode _jumpButton = KeyCode.Space;
+    private KeyCode _moveLeftButton = KeyCode.A;
+    private KeyCode _moveRightButton = KeyCode.D;
+    private KeyCode _noneButton = KeyCode.None;
+
+    public event UnityAction ScoreChanged;
+
+    public int Score { get; private set; } = 0;
+
+    private bool OnGround 
+    {
+        get 
+        {
+            _animator.SetBool(ParametrIsFalling, !_groundDetector.OnGround);
+            return _groundDetector.OnGround; 
+        } 
+    }
 
     private void Start()
     {
-        _movement = GetComponent<Movement>();       
+        _movement = GetComponent<Movement>();
+        _animator = GetComponent<Animator>();
+        _animatorKeyParametrs[_jumpButton] = "OnJump";
+        _animatorKeyParametrs[_moveLeftButton] = "IsMooving";
+        _animatorKeyParametrs[_moveRightButton] = "IsMooving";
+        _animatorKeyParametrs[_noneButton] = "IsMooving";
     }
 
     private void Update()
@@ -25,20 +55,22 @@ public class Player : MonoBehaviour , IDamageble
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collider)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collider.gameObject.layer == 3)
+        if (collision.gameObject.TryGetComponent(out Coin coin))
         {
-            OnGround = true;
+            Score += coin.ScoreValue;
+            Destroy(coin.gameObject);
+            ScoreChanged?.Invoke();
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collider)
+    private void Reset()
     {
-        if (collider.gameObject.layer == 3)
-        {
-            OnGround = false;
-        }
+        BoxCollider2D[] boxCollider2Ds = GetComponents<BoxCollider2D>();
+        boxCollider2Ds[0].isTrigger = false;
+        boxCollider2Ds[1].isTrigger = true;
+        _health = 100;
     }
 
     public void TakeDamage(int damage)
@@ -48,19 +80,25 @@ public class Player : MonoBehaviour , IDamageble
 
     private void ApplyInput() 
     {
-        if (Input.GetKeyDown(KeyCode.Space) && OnGround)
+        if (OnGround && Input.GetKeyDown(_jumpButton))
         {
             _movement.Jump();
+            _animator.SetTrigger(_animatorKeyParametrs[_jumpButton]);
         }
 
-        if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(_moveRightButton))
         {
             _movement.MoveRight();
+            _animator.SetBool(_animatorKeyParametrs[_moveRightButton], true);
         }
-
-        if (Input.GetKey(KeyCode.A))
+        else if (Input.GetKey(_moveLeftButton))
         {
             _movement.MoveLeft();
+            _animator.SetBool(_animatorKeyParametrs[_moveLeftButton], true);
+        }
+        else
+        {
+            _animator.SetBool(_animatorKeyParametrs[_noneButton], false);
         }
     }
 }
