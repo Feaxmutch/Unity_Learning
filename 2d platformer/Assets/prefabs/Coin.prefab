@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17743f69dcfd2374187fd3ad0ecdc9ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initialScoreValue: 1
+  <ScoreValue>k__BackingField: 1
 --- !u!61 &-4436876518769945102
 BoxCollider2D:
   m_ObjectHideFlags: 0

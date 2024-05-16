@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Movement : MonoBehaviour
+public class Mover : MonoBehaviour
 {
     [SerializeField] private float _walkSpeed;
     [SerializeField] private float _jumpForce;
@@ -24,15 +24,9 @@ public class Movement : MonoBehaviour
         _rigidbody2D.AddForce(Vector2.up * _jumpForce);
     }
 
-    public void MoveLeft()
+    public void Move(Vector2 direction)
     {
-        transform.Translate(Vector3.left * _walkSpeed * Time.deltaTime);
-        transform.localScale = new Vector3(_defaultScale.x * -1, _defaultScale.y, _defaultScale.z);
-    }
-
-    public void MoveRight()
-    {
-        transform.Translate(Vector3.right * _walkSpeed * Time.deltaTime);
-        transform.localScale = _defaultScale;
+        transform.Translate(direction * _walkSpeed * Time.deltaTime);
+        transform.localScale = new Vector3(_defaultScale.x * direction.x, _defaultScale.y, _defaultScale.z);
     }
 }

@@ -2,10 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(Movement))]
-[RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(BoxCollider2D))]
-[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Mover), typeof(Animator))]
+[RequireComponent(typeof(BoxCollider2D), typeof(BoxCollider2D))]
 public class Player : MonoBehaviour , IDamageble
 {
     private const string ParametrIsFalling = "IsFalling";
@@ -13,7 +11,7 @@ public class Player : MonoBehaviour , IDamageble
     [SerializeField] private int _health;
     [SerializeField] private GroundDetector _groundDetector;
 
-    private Movement _movement;
+    private Mover _movement;
     private Animator _animator;
     private Dictionary<KeyCode, string> _animatorKeyParametrs = new();
 
@@ -37,7 +35,7 @@ public class Player : MonoBehaviour , IDamageble
 
     private void Start()
     {
-        _movement = GetComponent<Movement>();
+        _movement = GetComponent<Mover>();
         _animator = GetComponent<Animator>();
         _animatorKeyParametrs[_jumpButton] = "OnJump";
         _animatorKeyParametrs[_moveLeftButton] = "IsMooving";
@@ -88,12 +86,12 @@ public class Player : MonoBehaviour , IDamageble
 
         if (Input.GetKey(_moveRightButton))
         {
-            _movement.MoveRight();
+            _movement.Move(Vector2.right);
             _animator.SetBool(_animatorKeyParametrs[_moveRightButton], true);
         }
         else if (Input.GetKey(_moveLeftButton))
         {
-            _movement.MoveLeft();
+            _movement.Move(Vector2.left);
             _animator.SetBool(_animatorKeyParametrs[_moveLeftButton], true);
         }
         else

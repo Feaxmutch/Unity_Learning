@@ -1,17 +1,17 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Movement))]
+[RequireComponent(typeof(Mover))]
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private Transform[] _patrolPoints;
 
     private float _sucsesDistance = 0.2f;
-    private Movement _movement;
+    private Mover _movement;
 
     private void Start()
     {
-        _movement = GetComponent<Movement>();
+        _movement = GetComponent<Mover>();
         StartCoroutine(Patrol());
     }
 
@@ -26,11 +26,11 @@ public class Enemy : MonoBehaviour
                 {
                     if (transform.position.x > point.position.x)
                     {
-                        _movement.MoveLeft();
+                        _movement.Move(Vector2.left);
                     }
                     else
                     {
-                        _movement.MoveRight();
+                        _movement.Move(Vector2.right);
                     }
 
                     yield return null;
@@ -38,21 +38,4 @@ public class Enemy : MonoBehaviour
             }
         }
     }
-
-    //private IEnumerator FolowAPlayer()
-    //{
-    //    while (true)
-    //    {
-    //        if (transform.position.x > _player.position.x)
-    //        {
-    //            _movement.MoveLeft();
-    //        }
-    //        else
-    //        {
-    //            _movement.MoveRight();
-    //        }
-
-    //        yield return null;
-    //    }
-    //}
 }
