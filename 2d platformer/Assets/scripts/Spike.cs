@@ -6,11 +6,8 @@ public class Spike : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-       Component[] components = collision.gameObject.GetComponents(typeof(IDamageble));
-
-        foreach (var component in components)
+        if (collision.gameObject.TryGetComponent<IDamageble>(out var damageble))
         {
-            IDamageble damageble = component as IDamageble;
             damageble.TakeDamage(_damage);
         }
     }

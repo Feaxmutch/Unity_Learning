@@ -1,13 +1,13 @@
 using System.Collections;
 using UnityEngine;
 
-public class RandomSpawner : MonoBehaviour
+public class CoinGenerator : MonoBehaviour
 {
     [SerializeField] private float _spawnDelay;
-    [SerializeField] private GameObject _prefab;
+    [SerializeField] private Coin _prefab;
     [SerializeField] private Transform[] _spawnPositions;
 
-    void Start()
+    private void Start()
     {
         StartCoroutine(Spawning(_spawnDelay));
     }
@@ -23,7 +23,5 @@ public class RandomSpawner : MonoBehaviour
             Instantiate(_prefab, spawnPosition, Quaternion.Euler(Vector3.zero));
             yield return wait;
         }
-
-        
     }
 }

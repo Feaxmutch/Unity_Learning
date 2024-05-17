@@ -63,11 +63,8 @@ public class Player : MonoBehaviour , IDamageble
         }
     }
 
-    private void Reset()
+    private void Reset() 
     {
-        BoxCollider2D[] boxCollider2Ds = GetComponents<BoxCollider2D>();
-        boxCollider2Ds[0].isTrigger = false;
-        boxCollider2Ds[1].isTrigger = true;
         _health = 100;
     }
 
