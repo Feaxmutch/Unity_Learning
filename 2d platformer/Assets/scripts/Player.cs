@@ -1,34 +1,30 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(Mover), typeof(Animator))]
+[RequireComponent(typeof(Mover), typeof(Animator), typeof(PlayerAnimatorHandler))]
 [RequireComponent(typeof(BoxCollider2D), typeof(BoxCollider2D))]
 public class Player : MonoBehaviour , IDamageble
 {
-    private const string ParametrIsFalling = "IsFalling";
-
     [SerializeField] private int _health;
     [SerializeField] private GroundDetector _groundDetector;
 
     private Mover _movement;
-    private Animator _animator;
-    private Dictionary<KeyCode, string> _animatorKeyParametrs = new();
 
     private KeyCode _jumpButton = KeyCode.Space;
     private KeyCode _moveLeftButton = KeyCode.A;
     private KeyCode _moveRightButton = KeyCode.D;
-    private KeyCode _noneButton = KeyCode.None;
 
     public event UnityAction ScoreChanged;
+    public event UnityAction OnMove;
+    public event UnityAction OnStop;
+    public event UnityAction OnJump;
 
     public int Score { get; private set; } = 0;
 
-    private bool OnGround 
+    public bool OnGround 
     {
         get 
         {
-            _animator.SetBool(ParametrIsFalling, !_groundDetector.OnGround);
             return _groundDetector.OnGround; 
         } 
     }
@@ -36,11 +32,6 @@ public class Player : MonoBehaviour , IDamageble
     private void Start()
     {
         _movement = GetComponent<Mover>();
-        _animator = GetComponent<Animator>();
-        _animatorKeyParametrs[_jumpButton] = "OnJump";
-        _animatorKeyParametrs[_moveLeftButton] = "IsMooving";
-        _animatorKeyParametrs[_moveRightButton] = "IsMooving";
-        _animatorKeyParametrs[_noneButton] = "IsMooving";
     }
 
     private void Update()
@@ -78,22 +69,22 @@ public class Player : MonoBehaviour , IDamageble
         if (OnGround && Input.GetKeyDown(_jumpButton))
         {
             _movement.Jump();
-            _animator.SetTrigger(_animatorKeyParametrs[_jumpButton]);
+            OnJump?.Invoke();
         }
 
         if (Input.GetKey(_moveRightButton))
         {
             _movement.Move(Vector2.right);
-            _animator.SetBool(_animatorKeyParametrs[_moveRightButton], true);
+            OnMove?.Invoke();
         }
         else if (Input.GetKey(_moveLeftButton))
         {
             _movement.Move(Vector2.left);
-            _animator.SetBool(_animatorKeyParametrs[_moveLeftButton], true);
+            OnMove?.Invoke();
         }
         else
         {
-            _animator.SetBool(_animatorKeyParametrs[_noneButton], false);
+            OnStop?.Invoke();
         }
     }
 }
