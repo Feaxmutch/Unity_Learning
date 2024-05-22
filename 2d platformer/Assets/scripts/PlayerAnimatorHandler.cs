@@ -1,19 +1,15 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class PlayerAnimatorHandler : MonoBehaviour
 {
-    private const string ParametrIsMooving = "IsMooving";
-    private const string ParametrOnJump = "OnJump";
-    private const string ParametrIsFalling = "IsFalling";
-
     [SerializeField] private Player _player;
 
     private Animator _animator;
 
-    private void Start()
+    private void Awake()
     {
         _animator = _player.GetComponent<Animator>();
-        
     }
 
     private void OnEnable()
@@ -32,21 +28,30 @@ public class PlayerAnimatorHandler : MonoBehaviour
 
     private void Update()
     {
-        _animator.SetBool(ParametrIsFalling, !_player.OnGround);
+        _animator.SetBool(PlayerAnimatorParametrs.IsFalling, !_player.OnGround);
     }
 
     private void Move()
     {
-        _animator.SetBool(ParametrIsMooving, true);
+        _animator.SetBool(PlayerAnimatorParametrs.IsMooving, true);
     }
 
     private void Stop()
     {
-        _animator.SetBool(ParametrIsMooving, false);
+        _animator.SetBool(PlayerAnimatorParametrs.IsMooving, false);
     }
 
     private void Jump()
     {
-        _animator.SetTrigger(ParametrOnJump);
+        _animator.SetTrigger(PlayerAnimatorParametrs.OnJump);
+    }
+
+    private static class PlayerAnimatorParametrs
+    {
+        public static readonly int IsMooving = Animator.StringToHash(nameof(IsMooving));
+        public static readonly int IsFalling = Animator.StringToHash(nameof(IsFalling));
+        public static readonly int OnJump = Animator.StringToHash(nameof(OnJump));
     }
 }
+
+

@@ -1,18 +1,17 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(Mover), typeof(Animator), typeof(PlayerAnimatorHandler))]
-[RequireComponent(typeof(BoxCollider2D), typeof(BoxCollider2D))]
-public class Player : MonoBehaviour , IDamageble
+[RequireComponent(typeof(Mover), typeof(PlayerAnimatorHandler))]
+[RequireComponent(typeof(BoxCollider2D), typeof(Health), typeof(PlayerInput))]
+public class Player : MonoBehaviour
 {
-    [SerializeField] private int _health;
     [SerializeField] private GroundDetector _groundDetector;
+    [SerializeField] private ItemDetector _itemDetector;
 
-    private Mover _movement;
-
-    private KeyCode _jumpButton = KeyCode.Space;
-    private KeyCode _moveLeftButton = KeyCode.A;
-    private KeyCode _moveRightButton = KeyCode.D;
+    private Mover _mover;
+    private PlayerInput _playerInput;
+    private Health _health;
+    private bool _isJump;
 
     public event UnityAction ScoreChanged;
     public event UnityAction OnMove;
@@ -29,62 +28,91 @@ public class Player : MonoBehaviour , IDamageble
         } 
     }
 
-    private void Start()
+    private void Awake()
     {
-        _movement = GetComponent<Mover>();
+        _mover = GetComponent<Mover>();
+        _playerInput = GetComponent<PlayerInput>();
+        _health = GetComponent<Health>();
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        ApplyInput();
+        _health.HealthIsOver += Death;
+        _itemDetector.ItemIsDetected += TryPickupItem;
+        _playerInput.SendingJump += Jump;
+        _playerInput.SendingLeft += MoveLeft;
+        _playerInput.SendingRight += MoveRight;
+        _playerInput.NotSending += Stop;
+    }
 
-        if (_health <= 0)
+    private void OnDisable()
+    {
+        _health.HealthIsOver -= Death;
+        _itemDetector.ItemIsDetected -= TryPickupItem;
+        _playerInput.SendingJump -= Jump;
+        _playerInput.SendingLeft -= MoveLeft;
+        _playerInput.SendingRight -= MoveRight;
+        _playerInput.NotSending -= Stop;
+    }
+
+    private void FixedUpdate()
+    {
+        if (_isJump)
         {
-            Destroy(gameObject);
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.TryGetComponent(out Coin coin))
-        {
-            Score += coin.ScoreValue;
-            Destroy(coin.gameObject);
-            ScoreChanged?.Invoke();
-        }
-    }
-
-    private void Reset() 
-    {
-        _health = 100;
-    }
-
-    public void TakeDamage(int damage)
-    {
-        _health -= damage;
-    }
-
-    private void ApplyInput() 
-    {
-        if (OnGround && Input.GetKeyDown(_jumpButton))
-        {
-            _movement.Jump();
+            _mover.Jump();
             OnJump?.Invoke();
+            _isJump = false;
         }
+    }
 
-        if (Input.GetKey(_moveRightButton))
+    private void Death()
+    {
+        Destroy(gameObject);
+    }
+    
+    private void TryPickupItem(Item item)
+    {
+        bool pickupIsSuccessful = true;
+
+        if (item is Coin)
         {
-            _movement.Move(Vector2.right);
-            OnMove?.Invoke();
-        }
-        else if (Input.GetKey(_moveLeftButton))
-        {
-            _movement.Move(Vector2.left);
-            OnMove?.Invoke();
+            Coin coin = item as Coin;
+            Score += coin.ScoreValue;
+            ScoreChanged?.Invoke();
         }
         else
         {
-            OnStop?.Invoke();
+            pickupIsSuccessful = false;
         }
+
+        if (pickupIsSuccessful)
+        {
+            Destroy(item.gameObject);
+        }
+    }
+
+    private void Jump()
+    {
+        if (OnGround)
+        {
+            _isJump = true;
+        }
+    }
+
+    private void MoveLeft()
+    {
+        _mover.Move(Vector2.left);
+        OnMove?.Invoke();
+    }
+
+    private void MoveRight()
+    {
+        _mover.Move(Vector2.right);
+        OnMove?.Invoke();
+    }
+
+    private void Stop()
+    {
+        OnStop?.Invoke();
     }
 }

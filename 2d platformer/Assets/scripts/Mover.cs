@@ -12,10 +12,6 @@ public class Mover : MonoBehaviour
     private void Awake()
     {
         _defaultScale = transform.localScale;
-    }
-
-    private void Start()
-    {
         _rigidbody2D = GetComponent<Rigidbody2D>();
     }
 

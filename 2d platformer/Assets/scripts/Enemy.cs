@@ -7,11 +7,16 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Transform[] _patrolPoints;
 
     private float _sucsesDistance = 0.2f;
-    private Mover _movement;
+    private Mover _mover;
+
+    private void Awake()
+    {
+        _mover = GetComponent<Mover>();
+    }
 
     private void Start()
     {
-        _movement = GetComponent<Mover>();
+        
         StartCoroutine(Patrol());
     }
 
@@ -26,11 +31,11 @@ public class Enemy : MonoBehaviour
                 {
                     if (transform.position.x > point.position.x)
                     {
-                        _movement.Move(Vector2.left);
+                        _mover.Move(Vector2.left);
                     }
                     else
                     {
-                        _movement.Move(Vector2.right);
+                        _mover.Move(Vector2.right);
                     }
 
                     yield return null;
