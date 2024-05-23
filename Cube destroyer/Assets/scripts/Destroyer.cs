@@ -3,6 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(SphereCollider))]
 public class Destroyer : MonoBehaviour
 {
     [SerializeField] private int childsInVector;

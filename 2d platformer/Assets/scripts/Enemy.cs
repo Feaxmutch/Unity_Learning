@@ -1,17 +1,24 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Mover))]
+[RequireComponent(typeof(Mover), typeof(Health))]
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private Transform[] _patrolPoints;
 
     private float _sucsesDistance = 0.2f;
     private Mover _mover;
+    private Health _health;
 
     private void Awake()
     {
         _mover = GetComponent<Mover>();
+        _health = GetComponent<Health>();
+    }
+
+    private void OnEnable()
+    {
+        _health.HealthIsOver += Death;
     }
 
     private void Start()
@@ -42,5 +49,10 @@ public class Enemy : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void Death()
+    {
+        Destroy(gameObject);
     }
 }

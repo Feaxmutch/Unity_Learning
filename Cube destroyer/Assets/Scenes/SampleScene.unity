@@ -574,6 +574,7 @@ GameObject:
   - component: {fileID: 1640034980}
   - component: {fileID: 1640034979}
   - component: {fileID: 1640034984}
+  - component: {fileID: 1640034985}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -707,7 +708,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childsInVector: 2
-  destroyChance: 2
+  _destroyChance: 2
   _explosionForce: 500
   _explosionRadius: 100
 --- !u!114 &1640034980
@@ -746,6 +747,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1431fb6a41a200c4fb317f36efb814ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!135 &1640034985
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1640034973}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.2
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1849343810
 GameObject:
   m_ObjectHideFlags: 0
@@ -763,6 +785,7 @@ GameObject:
   - component: {fileID: 1849343813}
   - component: {fileID: 1849343812}
   - component: {fileID: 1849343811}
+  - component: {fileID: 1849343820}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -795,7 +818,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childsInVector: 2
-  destroyChance: 2
+  _destroyChance: 2
   _explosionForce: 500
   _explosionRadius: 100
 --- !u!114 &1849343813
@@ -935,6 +958,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1849343820
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849343810}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.2
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

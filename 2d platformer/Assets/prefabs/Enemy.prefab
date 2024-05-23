@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7097051018539791473}
   - component: {fileID: 630857921585917890}
   - component: {fileID: 4120149830288869154}
+  - component: {fileID: 4380546013002758352}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -189,3 +190,16 @@ MonoBehaviour:
   _patrolPoints:
   - {fileID: 0}
   - {fileID: 0}
+--- !u!114 &4380546013002758352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3357171735833839381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caee102e37b39664094bba7e76135a86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxValue: 20
