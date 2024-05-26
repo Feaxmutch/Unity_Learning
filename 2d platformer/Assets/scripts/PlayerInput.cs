@@ -10,7 +10,6 @@ public class PlayerInput : MonoBehaviour
     public event UnityAction SendingJump;
     public event UnityAction SendingLeft;
     public event UnityAction SendingRight;
-    public event UnityAction NotSending;
 
     private void Update()
     {
@@ -25,10 +24,6 @@ public class PlayerInput : MonoBehaviour
         else if(Input.GetKey(_moveRight))
         {
             SendingRight?.Invoke();
-        }
-        else
-        {
-            NotSending?.Invoke();
         }
     }
 }

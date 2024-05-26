@@ -1,75 +1,76 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(Mover), typeof(PlayerAnimatorHandler))]
-[RequireComponent(typeof(BoxCollider2D), typeof(Health), typeof(PlayerInput))]
-public class Player : MonoBehaviour
+[RequireComponent(typeof(PlayerAnimatorHandler), typeof(SpriteRenderer), typeof(SpriteBlinker))]
+[RequireComponent(typeof(BoxCollider2D), typeof(PlayerInput))]
+public class Player : Entity
 {
-    [SerializeField] private GroundDetector _groundDetector;
     [SerializeField] private ItemDetector _itemDetector;
+    [SerializeField] private EntityDetector _entityDetector;
+    [SerializeField] private int _attackDamage;
 
-    private Mover _mover;
     private PlayerInput _playerInput;
-    private Health _health;
-    private bool _isJump;
+    private SpriteBlinker _spriteBlinker;
 
     public event UnityAction ScoreChanged;
-    public event UnityAction OnMove;
-    public event UnityAction OnStop;
-    public event UnityAction OnJump;
 
     public int Score { get; private set; } = 0;
 
-    public bool OnGround 
+    protected override void Awake()
     {
-        get 
-        {
-            return _groundDetector.OnGround; 
-        } 
-    }
-
-    private void Awake()
-    {
-        _mover = GetComponent<Mover>();
         _playerInput = GetComponent<PlayerInput>();
-        _health = GetComponent<Health>();
+        _spriteBlinker = GetComponent<SpriteBlinker>();
+        base.Awake();
     }
 
     private void OnEnable()
     {
-        _health.HealthIsOver += Death;
+        Health.HealthIsOver += Death;
+        Health.TakedDamage += DamageResponse;
+        Health.TakedHeal += HealResponse;
         _itemDetector.ItemIsDetected += TryPickupItem;
-        _playerInput.SendingJump += Jump;
-        _playerInput.SendingLeft += MoveLeft;
-        _playerInput.SendingRight += MoveRight;
-        _playerInput.NotSending += Stop;
+        _entityDetector.EntityIsDetected += TryAttack;
+        _playerInput.SendingJump += () => _mover.Jump();
+        _playerInput.SendingLeft += () => _mover.Move(Vector2.left);
+        _playerInput.SendingRight += () => _mover.Move(Vector2.right);
     }
 
     private void OnDisable()
     {
-        _health.HealthIsOver -= Death;
+        Health.HealthIsOver -= Death;
+        Health.TakedDamage -= DamageResponse;
+        Health.TakedHeal -= HealResponse;
         _itemDetector.ItemIsDetected -= TryPickupItem;
-        _playerInput.SendingJump -= Jump;
-        _playerInput.SendingLeft -= MoveLeft;
-        _playerInput.SendingRight -= MoveRight;
-        _playerInput.NotSending -= Stop;
-    }
-
-    private void FixedUpdate()
-    {
-        if (_isJump)
-        {
-            _mover.Jump();
-            OnJump?.Invoke();
-            _isJump = false;
-        }
+        _playerInput.SendingJump -= () => _mover.Jump();
+        _playerInput.SendingLeft -= () => _mover.Move(Vector2.left);
+        _playerInput.SendingRight -= () => _mover.Move(Vector2.right);
     }
 
     private void Death()
     {
         Destroy(gameObject);
     }
-    
+
+    private void DamageResponse()
+    {
+        StartCoroutine(DamageBlink());
+    }
+
+    private IEnumerator DamageBlink()
+    {
+        while (Health.IsDamageResistance)
+        {
+            _spriteBlinker.TryBlink(new Color(1, 1, 1, 0.5f), 0.3f);
+            yield return null;
+        }
+    }
+
+    private void HealResponse()
+    {
+        _spriteBlinker.TryBlink(new Color(1f, 2f, 1f, 1f), 0.5f);
+    }
+
     private void TryPickupItem(Item item)
     {
         bool pickupIsSuccessful = true;
@@ -79,6 +80,11 @@ public class Player : MonoBehaviour
             Coin coin = item as Coin;
             Score += coin.ScoreValue;
             ScoreChanged?.Invoke();
+        }
+        else if (item is HealPotion)
+        {
+            HealPotion potion = item as HealPotion;
+            Health.TakeHeal(potion.HealValue);
         }
         else
         {
@@ -91,28 +97,13 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Jump()
+    private void TryAttack(Entity entity)
     {
-        if (OnGround)
+        if (entity is Enemy)
         {
-            _isJump = true;
+            Enemy enemy = entity as Enemy;
+            enemy.Health.TakeDamage(_attackDamage);
+            _mover.Jump();
         }
-    }
-
-    private void MoveLeft()
-    {
-        _mover.Move(Vector2.left);
-        OnMove?.Invoke();
-    }
-
-    private void MoveRight()
-    {
-        _mover.Move(Vector2.right);
-        OnMove?.Invoke();
-    }
-
-    private void Stop()
-    {
-        OnStop?.Invoke();
     }
 }

@@ -6,29 +6,31 @@ public class PlayerAnimatorHandler : MonoBehaviour
     [SerializeField] private Player _player;
 
     private Animator _animator;
+    private Mover _mover;
 
     private void Awake()
     {
         _animator = _player.GetComponent<Animator>();
+        _mover = _player.GetComponent<Mover>();
     }
 
     private void OnEnable()
     {
-        _player.OnMove += Move;
-        _player.OnStop += Stop;
-        _player.OnJump += Jump;
+        _mover.OnMove += Move;
+        _mover.OnStop += Stop;
+        _mover.OnJump += Jump;
     }
 
     private void OnDisable()
     {
-        _player.OnMove -= Move;
-        _player.OnStop -= Stop;
-        _player.OnJump -= Jump;
+        _mover.OnMove -= Move;
+        _mover.OnStop -= Stop;
+        _mover.OnJump -= Jump;
     }
 
     private void Update()
     {
-        _animator.SetBool(PlayerAnimatorParametrs.IsFalling, !_player.OnGround);
+        _animator.SetBool(PlayerAnimatorParametrs.IsFalling, !_mover.OnGround);
     }
 
     private void Move()

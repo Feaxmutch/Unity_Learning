@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
-public class CoinGenerator : MonoBehaviour
+public class ItemGenerator : MonoBehaviour
 {
     [SerializeField] private float _spawnDelay;
-    [SerializeField] private Coin _prefab;
+    [SerializeField] private Item _prefab;
     [SerializeField] private Transform[] _spawnPositions;
 
     private void Start()

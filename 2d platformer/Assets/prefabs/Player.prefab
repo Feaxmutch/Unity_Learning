@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5757981336836583320}
   - component: {fileID: 1507330734401021201}
   m_Layer: 0
-  m_Name: ItemDetector
+  m_Name: AroundDetector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -101,8 +101,9 @@ GameObject:
   - component: {fileID: 4513861718874052660}
   - component: {fileID: 2918955278802345500}
   - component: {fileID: 7204105870421273029}
+  - component: {fileID: 26651376272991837}
   m_Layer: 0
-  m_Name: GroundDetector
+  m_Name: ButtomDetector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -166,7 +167,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.89, y: 0.13}
+  m_Size: {x: 0.5, y: 0.13}
   m_EdgeRadius: 0
 --- !u!114 &7204105870421273029
 MonoBehaviour:
@@ -178,6 +179,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 732922d11d5d0ca4ab857482d5f23de0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &26651376272991837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6236860754268652009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52311bc48d9cc3545a9920793f0d9d78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8550011811470781992
@@ -198,6 +211,7 @@ GameObject:
   - component: {fileID: 1709651892051445146}
   - component: {fileID: 5654897502096031247}
   - component: {fileID: 2197216083409085991}
+  - component: {fileID: 9194488441773212643}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -306,8 +320,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb76e50cfd11ed845840b323229bacfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _groundDetector: {fileID: 7204105870421273029}
   _walkSpeed: 5
   _jumpForce: 500
+  _jumpCooldown: 0.5
 --- !u!114 &2287403428747002788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,8 +336,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b89d8d5cdb63fad4a9e20d67ac0c0d40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _groundDetector: {fileID: 7204105870421273029}
   _itemDetector: {fileID: 1507330734401021201}
+  _entityDetector: {fileID: 26651376272991837}
 --- !u!212 &3936628849419175709
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -421,6 +437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxValue: 100
+  _resistanceTime: 5
 --- !u!114 &2197216083409085991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -436,3 +453,15 @@ MonoBehaviour:
   _jump: 32
   _moveLeft: 97
   _moveRight: 100
+--- !u!114 &9194488441773212643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550011811470781992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4693298683a3f9488f97e0e0f6d669c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

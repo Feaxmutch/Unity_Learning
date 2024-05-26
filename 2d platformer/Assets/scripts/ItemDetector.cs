@@ -1,16 +1,23 @@
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
-public class ItemDetector : MonoBehaviour
+public class ItemDetector : Detector
 {
     public event ItemAction ItemIsDetected;
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void Awake()
     {
-        if (collision.TryGetComponent(out Item item))
-        {
-            ItemIsDetected?.Invoke(item);
-        }
+        _predicate = () => ReturnedCollider.TryGetComponent(out Item item);
+    }
+
+    private void OnEnable()
+    {
+        ColliderIsDetected += GetItem;
+    }
+
+    private void GetItem(Collider2D collider)
+    {
+        ItemIsDetected?.Invoke(collider.GetComponent<Item>());
     }
 }
 
