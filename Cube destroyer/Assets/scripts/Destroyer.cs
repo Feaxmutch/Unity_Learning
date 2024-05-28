@@ -16,9 +16,11 @@ public class Destroyer : MonoBehaviour
     private int _childsCount;
     private int _clildsScaleDevide = 2;
     private Mesh _mesh;
+    List<RainbowCube> _detectedCubes = new();
 
     private void Awake()
     {
+        _detectedCubes.Clear();
         MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
         _mesh = meshFilter.mesh;
         _destroyChance /= _clildsScaleDevide;
@@ -29,29 +31,50 @@ public class Destroyer : MonoBehaviour
         if (Random.Range(0f, 1f) < _destroyChance)
         {
             _childsCount = Random.Range(_minCildsCount, _maxCildsCount + 1);
-            Explose(_childsCount, childsInVector);
+            ExploseWithParts(_childsCount, childsInVector);
+        }
+        else
+        {
+            ClearNulls();
+            Explose();
         }
 
         Destroy(gameObject);
     }
 
-    private void Explose(int count, int positionsInVector)
+    private void OnTriggerEnter(Collider other)
     {
-        List<List<List<GameObject>>> childs = new();
+        if (other.TryGetComponent(out RainbowCube rainbowCube))
+        {
+            _detectedCubes.Add(rainbowCube);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent(out RainbowCube rainbowCube))
+        {
+            _detectedCubes.Remove(rainbowCube);
+        }
+    }
+
+    private void ExploseWithParts(int partsCount, int positionsInVector)
+    {
+        List<List<List<GameObject>>> parts = new();
         int numberOfVectors = 3;
-        count = Mathf.Min(count, (int)Mathf.Pow(positionsInVector, numberOfVectors));
+        partsCount = Mathf.Min(partsCount, (int)Mathf.Pow(positionsInVector, numberOfVectors));
 
         for (int x = 0; x < positionsInVector; x++)
         {
-            childs.Add(new());
+            parts.Add(new());
 
             for (int y = 0; y < positionsInVector; y++)
             {
-                childs[x].Add(new());
+                parts[x].Add(new());
 
                 for (int z = 0; z < positionsInVector; z++)
                 {
-                    childs[x][y].Add(null);
+                    parts[x][y].Add(null);
                 }
             }
         }
@@ -60,16 +83,16 @@ public class Destroyer : MonoBehaviour
         int yPosition = default;
         int zPosition = default;
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < partsCount; i++)
         {
             bool positionIsFree = false;
 
             while (positionIsFree == false)
             {
-                xPosition = Random.Range(0, childs.Count);
-                yPosition = Random.Range(0, childs[xPosition].Count);
-                zPosition = Random.Range(0, childs[yPosition].Count);
-                positionIsFree = childs[xPosition][yPosition][zPosition] == null;
+                xPosition = Random.Range(0, parts.Count);
+                yPosition = Random.Range(0, parts[xPosition].Count);
+                zPosition = Random.Range(0, parts[yPosition].Count);
+                positionIsFree = parts[xPosition][yPosition][zPosition] == null;
             }
 
             GameObject newObject = Instantiate(gameObject);
@@ -82,9 +105,31 @@ public class Destroyer : MonoBehaviour
             float zOffset = zPosition * (zScale / positionsInVector) - zScale / 2 + (zScale / (positionsInVector * 2));
             Vector3 positionOffset = new(xOffset, yOffset, zOffset);
             newObject.transform.position += positionOffset;
-            childs[xPosition][yPosition][zPosition] = newObject;
+            parts[xPosition][yPosition][zPosition] = newObject;
             Vector3 explosingPoint = transform.position + (transform.position - newObject.transform.position);
             newObject.GetComponent<Rigidbody>().AddExplosionForce(_explosionForce, explosingPoint, _explosionRadius);
+        }
+    }
+
+    private void Explose()
+    {
+        foreach (var rainbowCube in _detectedCubes)
+        {
+            rainbowCube.GetComponent<Rigidbody>().AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
+        }
+    }
+
+    private void ClearNulls()
+    {
+        while (_detectedCubes.Contains(null))
+        {
+            for (int i = 0; i < _detectedCubes.Count; i++)
+            {
+                if (_detectedCubes[i] == null)
+                {
+                    _detectedCubes.RemoveAt(i);
+                }
+            }
         }
     }
 }
