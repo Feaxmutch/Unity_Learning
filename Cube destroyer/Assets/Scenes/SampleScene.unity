@@ -694,7 +694,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &1640034979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -708,9 +708,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childsInVector: 2
-  _destroyChance: 2
+  _destroyChance: 4
   _explosionForce: 500
-  _explosionRadius: 100
+  _explosionRadius: 10
+  _explosionZone: {fileID: 1640034985}
 --- !u!114 &1640034980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -766,7 +767,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1.2
+  m_Radius: 1.1111112
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1849343810
 GameObject:
@@ -818,9 +819,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childsInVector: 2
-  _destroyChance: 2
+  _destroyChance: 4
   _explosionForce: 500
-  _explosionRadius: 100
+  _explosionRadius: 10
+  _explosionZone: {fileID: 1849343820}
 --- !u!114 &1849343813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -871,7 +873,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!65 &1849343816
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -954,7 +956,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.65, y: 0.24, z: 2.11}
   m_LocalScale: {x: 3, y: 3, z: 3}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -977,7 +979,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1.2
+  m_Radius: 1.1111112
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

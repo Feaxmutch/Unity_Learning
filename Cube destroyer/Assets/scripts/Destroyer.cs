@@ -8,8 +8,9 @@ public class Destroyer : MonoBehaviour
 {
     [SerializeField] private int childsInVector;
     [SerializeField] private float _destroyChance;
-    [SerializeField] private float _explosionForce; 
-    [SerializeField] private float _explosionRadius; 
+    [SerializeField] private float _explosionForce;
+    [SerializeField] private float _explosionRadius;
+    [SerializeField] private SphereCollider _explosionZone;
 
     private int _minCildsCount = 2;
     private int _maxCildsCount = 6;
@@ -21,9 +22,15 @@ public class Destroyer : MonoBehaviour
     private void Awake()
     {
         _detectedCubes.Clear();
-        MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
+        MeshFilter meshFilter = GetComponent<MeshFilter>();
         _mesh = meshFilter.mesh;
         _destroyChance /= _clildsScaleDevide;
+        UpdateExplosionZone();
+    }
+
+    private void OnValidate()
+    {
+        UpdateExplosionZone();
     }
 
     private void OnMouseDown()
@@ -35,7 +42,7 @@ public class Destroyer : MonoBehaviour
         }
         else
         {
-            ClearNulls();
+            ClearNullsAndDestroyed();
             Explose();
         }
 
@@ -56,6 +63,16 @@ public class Destroyer : MonoBehaviour
         {
             _detectedCubes.Remove(rainbowCube);
         }
+    }
+
+    private void UpdateExplosionZone()
+    {
+        _explosionZone.radius = _explosionRadius / GetSquare();
+    }
+
+    private float GetSquare()
+    {
+        return transform.localScale.x + transform.localScale.y + transform.localScale.z;
     }
 
     private void ExploseWithParts(int partsCount, int positionsInVector)
@@ -115,20 +132,17 @@ public class Destroyer : MonoBehaviour
     {
         foreach (var rainbowCube in _detectedCubes)
         {
-            rainbowCube.GetComponent<Rigidbody>().AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
+            rainbowCube.GetComponent<Rigidbody>().AddExplosionForce(_explosionForce / GetSquare(), transform.position, _explosionRadius);
         }
     }
 
-    private void ClearNulls()
+    private void ClearNullsAndDestroyed()
     {
-        while (_detectedCubes.Contains(null))
+        for (int i = _detectedCubes.Count - 1; i > -1; i--)
         {
-            for (int i = 0; i < _detectedCubes.Count; i++)
+            if (_detectedCubes[i] == null || _detectedCubes[i].GetComponents<Component>().Length == 0)
             {
-                if (_detectedCubes[i] == null)
-                {
-                    _detectedCubes.RemoveAt(i);
-                }
+                _detectedCubes.RemoveAt(i);
             }
         }
     }
