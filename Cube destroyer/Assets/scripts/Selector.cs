@@ -1,26 +1,64 @@
 using UnityEngine;
 
-[RequireComponent(typeof(MeshRenderer))]
-[RequireComponent(typeof(BoxCollider))]
 public class Selector : MonoBehaviour
 {
-    private Material _material;
-    private Color _defaultColor;
-    private float _colorOffset = 0.9f;
+    [SerializeField] private Exploser _destroyer;
+    [SerializeField] private Camera _camera;
 
-    public void Initialize(Material material)
+    private RainbowCube _currentSelect;
+
+    public event CubeAction CubeSelected;
+    public event CubeAction CubeUnSelected;
+
+    private void Update()
     {
-        _material = material;
-        _defaultColor = _material.color;
+        SelectCube();
+
+        if (_currentSelect != null)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                _destroyer.Explose(_currentSelect);
+            }
+        }
     }
 
-    private void OnMouseEnter()
+    private void SelectCube()
     {
-        _material.color = _defaultColor * _colorOffset;
-    }
+        RaycastHit[] hits = Physics.RaycastAll(_camera.ScreenPointToRay(Input.mousePosition), 1000);
+        bool cubeIsUnSelected = true;
 
-    private void OnMouseExit()
-    {
-        _material.color = _defaultColor;
+        if (_currentSelect == null)
+        {
+            foreach (var hit in hits)
+            {
+                if (hit.collider.TryGetComponent(out RainbowCube rainbowCube))
+                {
+                    _currentSelect = rainbowCube;
+                    CubeSelected?.Invoke(_currentSelect);
+                }
+            }
+        }
+        else
+        {
+            foreach (var hit in hits)
+            {
+                if (hit.collider.TryGetComponent(out RainbowCube rainbowCube))
+                {
+                    if (rainbowCube == _currentSelect)
+                    {
+                        cubeIsUnSelected = false;
+                    }
+                }
+            }
+
+            if (cubeIsUnSelected)
+            {
+                CubeUnSelected?.Invoke(_currentSelect);
+                _currentSelect = null;
+            }
+        }
     }
 }
+
+public delegate void CubeAction(RainbowCube rainbowCube);
