@@ -4,23 +4,25 @@ using UnityEngine.Events;
 
 public class Health : MonoBehaviour
 {
-    [Min(0)] [SerializeField] private int _maxValue;
+    [Min(0)] [SerializeField] private float _maxValue;
     [Min(0)] [SerializeField] private float _resistanceTime;
 
     public event UnityAction HealthIsOver;
     public event UnityAction TakedDamage;
     public event UnityAction TakedHeal;
 
-    public int Value { get; private set; }
+    public float MaxValue { get => _maxValue; }
+    
+    public float Value { get; private set; }
 
     public bool IsDamageResistance { get; private set; }
 
-    private void Start()
+    private void Awake()
     {
         Value = _maxValue;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         if (IsDamageResistance == false)
         {

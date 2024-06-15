@@ -4,24 +4,33 @@ using UnityEngine;
 public class Enemy : Entity
 {
     [SerializeField] private Transform[] _patrolPoints;
-    [SerializeField] private EntityDetector _entityDetactor;
+    [SerializeField] private Eye _playerFinder;
+    [SerializeField] private Eye _closePlayerFinder;
     [SerializeField] private float _folowingTime;
+    [SerializeField] private int _attackDamage;
 
     private float _sucsesDistance = 0.2f;
+    private Attack _attack;
     private Coroutine _delayedFolowing;
     private Coroutine _patrol;
     private Transform _target;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        _playerFinder.SetMask(new string[] { ObjectLayers.Player, ObjectLayers.Ground });
+        _closePlayerFinder.SetMask(new string[] { ObjectLayers.Player, ObjectLayers.Ground });
+        _attack = new Attack(_attackDamage, this);
+    }
+
     private void OnEnable()
     {
         Health.HealthIsOver += Death;
-        _entityDetactor.EntityIsDetected += TryAttack;
     }
 
     private void OnDisable()
     {
         Health.HealthIsOver -= Death;
-        _entityDetactor.EntityIsDetected -= TryAttack;
     }
 
     private void Start()
@@ -63,20 +72,23 @@ public class Enemy : Entity
 
     private IEnumerator FolowTheTarget()
     {
-        while (true)
+        while (enabled)
         {
             if (transform.position.x > _target.position.x)
             {
-                _mover.Move(Vector2.left);
+                Mover.Move(Vector2.left);
             }
             else
             {
-                _mover.Move(Vector2.right);
+                Mover.Move(Vector2.right);
             }
+
+            _playerFinder.LookDirection = Mover.LookDirection;
+            _closePlayerFinder.LookDirection = Mover.LookDirection;
 
             if (transform.position.y + 1f < _target.position.y)
             {
-                _mover.Jump();
+                Mover.Jump();
             }
 
             yield return null;
@@ -85,10 +97,7 @@ public class Enemy : Entity
 
     private void FindPlayer()
     {
-        RaycastHit2D[] hits2D = new RaycastHit2D[10];
-        Physics2D.Raycast(transform.position + new Vector3(0, 0.5f), _mover.LookDirection, new ContactFilter2D(), hits2D, 30);
-
-        if (hits2D[1].collider?.gameObject.TryGetComponent(out Player player) ?? false)
+        if (_playerFinder.TryFindComponent(out Player player))
         {
             if (_delayedFolowing != null)
             {
@@ -103,20 +112,16 @@ public class Enemy : Entity
 
             _delayedFolowing = StartCoroutine(DelayedFolowing(player));
             Debug.Log("folowing started");
+
+            if (_closePlayerFinder.TryFindComponent(out player))
+            {
+                _attack.DoAttack(player);
+            }
         }
     }
 
     private void Death()
     {
         Destroy(gameObject);
-    }
-
-    private void TryAttack(Entity entity)
-    {
-        if (entity is Player)
-        {
-            Player player = entity as Player;
-            player.Health.TakeDamage(20);
-        }
     }
 }

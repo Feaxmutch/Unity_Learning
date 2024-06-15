@@ -2,24 +2,25 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider2D))]
 public class Detector : MonoBehaviour
 {
-    protected List<Collider2D> _colliders2D = new();
+    protected List<Collider2D> Colliders2D { get; private set; } = new();
 
     protected Collider2D ReturnedCollider { get; private set; } = null;
 
-    protected Func<bool> _predicate;
+    protected Func<bool> DetectSolution { get; set; }
 
-    protected event ColliderAction ColliderIsDetected;
+    protected event Action ColliderDetected;
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
         ReturnedCollider = collider;
 
-        if (_predicate.Invoke())
+        if (DetectSolution.Invoke())
         {
-            _colliders2D.Add(collider);
-            ColliderIsDetected?.Invoke(collider);
+            Colliders2D.Add(collider);
+            ColliderDetected?.Invoke();
         }
     }
 
@@ -27,16 +28,14 @@ public class Detector : MonoBehaviour
     {
         ReturnedCollider = collider;
 
-        if (_predicate.Invoke())
+        if (DetectSolution.Invoke())
         {
-            _colliders2D.Remove(collider);
+            Colliders2D.Remove(collider);
         }
     }
 
     private void Reset()
     {
-        _colliders2D.Clear();
+        Colliders2D.Clear();
     }
 }
-
-public delegate void ColliderAction(Collider2D collider);

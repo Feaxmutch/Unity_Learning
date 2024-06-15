@@ -16,21 +16,21 @@ public class PlayerAnimatorHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        _mover.OnMove += Move;
-        _mover.OnStop += Stop;
-        _mover.OnJump += Jump;
+        _mover.Moved += Move;
+        _mover.Stoped += Stop;
+        _mover.Jumped += Jump;
     }
 
     private void OnDisable()
     {
-        _mover.OnMove -= Move;
-        _mover.OnStop -= Stop;
-        _mover.OnJump -= Jump;
+        _mover.Moved -= Move;
+        _mover.Stoped -= Stop;
+        _mover.Jumped -= Jump;
     }
 
     private void Update()
     {
-        _animator.SetBool(PlayerAnimatorParametrs.IsFalling, !_mover.OnGround);
+        _animator.SetBool(PlayerAnimatorParametrs.IsFalling, !_mover.IsGround());
     }
 
     private void Move()

@@ -1,41 +1,42 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Mover : MonoBehaviour
 {
-    [SerializeField] private SolidDetector _groundDetector;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private Eye _solidFinder;
     [SerializeField] private float _walkSpeed;
     [SerializeField] private float _jumpForce;
     [SerializeField] private float _jumpCooldown;
+    [SerializeField] private bool _isInvertFlip;
 
     private Rigidbody2D _rigidbody2D;
     private Coroutine _cooldownedJump = null;
-    private Vector3 _defaultScale;
     private float _fallMultiplyer = 0.15f; 
     private bool _isMoving = false;
     private bool _isJump = false;
 
-    public event UnityAction OnMove;
-    public event UnityAction OnStop;
-    public event UnityAction OnJump;
+    public event UnityAction Moved;
+    public event UnityAction Stoped;
+    public event UnityAction Jumped;
 
-    public bool OnGround { get => _groundDetector.SolidDetected; }
-
-    public Vector2 LookDirection { get => new Vector2(transform.localScale.x, 0).normalized; }
+    public Vector2 LookDirection { get; private set; }
 
     private void Awake()
     {
-        _defaultScale = transform.localScale;
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        _solidFinder.SetMask(new string[] {ObjectLayers.Ground });
+        _solidFinder.LookDirection = Vector2.down;
     }
 
     private void Update()
     {
         if (_isMoving == false)
         {
-            OnStop?.Invoke();
+            Stoped?.Invoke();
         }
 
         _isMoving = false;
@@ -45,10 +46,10 @@ public class Mover : MonoBehaviour
     {
         if (_isJump)
         {
-            if (_groundDetector.SolidDetected && _cooldownedJump == null)
+            if (IsGround() && _cooldownedJump == null)
             {
                 _cooldownedJump = StartCoroutine(CooldownedJump());
-                OnJump?.Invoke();
+                Jumped?.Invoke();
             }
 
             _isJump = false;
@@ -62,10 +63,22 @@ public class Mover : MonoBehaviour
 
     public void Move(Vector2 direction)
     {
+        direction = direction.normalized;
+        LookDirection = direction;
         transform.Translate(direction * _walkSpeed * Time.deltaTime);
-        transform.localScale = new Vector3(_defaultScale.x * direction.x, _defaultScale.y, _defaultScale.z);
-        OnMove?.Invoke();
+
+        if (_spriteRenderer != null)
+        {
+            _spriteRenderer.flipX = _isInvertFlip ? direction.x < 0 == false : direction.x < 0;
+        }
+
+        Moved?.Invoke();
         _isMoving = true;
+    }
+
+    public bool IsGround()
+    {
+        return _solidFinder.TryFindComponent(out TilemapCollider2D collider2D);
     }
 
     private IEnumerator CooldownedJump()
