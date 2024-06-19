@@ -4,6 +4,7 @@ public class VampirismAbility : Ability
 {
     private AbsorbingAttack _attack;
     private float _radius;
+
     public VampirismAbility(Player owner, float cooldown, float duration, float damage, float radius) : base(owner, cooldown, duration, false)
     {
         _attack = new AbsorbingAttack(owner, damage);
