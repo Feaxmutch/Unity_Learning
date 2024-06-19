@@ -20,7 +20,7 @@ public class Enemy : Entity
         base.Awake();
         _playerFinder.SetMask(new string[] { ObjectLayers.Player, ObjectLayers.Ground });
         _closePlayerFinder.SetMask(new string[] { ObjectLayers.Player, ObjectLayers.Ground });
-        _attack = new Attack(_attackDamage, this);
+        _attack = new Attack(this, _attackDamage);
     }
 
     private void OnEnable()
@@ -67,7 +67,6 @@ public class Enemy : Entity
         yield return new WaitForSeconds(_folowingTime);
         _delayedFolowing = null;
         _patrol = StartCoroutine(Patrol());
-        Debug.Log("folowing stoped");
     }
 
     private IEnumerator FolowTheTarget()
@@ -111,7 +110,6 @@ public class Enemy : Entity
             }
 
             _delayedFolowing = StartCoroutine(DelayedFolowing(player));
-            Debug.Log("folowing started");
 
             if (_closePlayerFinder.TryFindComponent(out player))
             {

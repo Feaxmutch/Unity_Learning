@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
+using System;
 
 [RequireComponent(typeof(PlayerAnimatorHandler), typeof(SpriteRenderer), typeof(SpriteBlinker))]
 [RequireComponent(typeof(BoxCollider2D), typeof(PlayerInput))]
@@ -9,14 +9,16 @@ public class Player : Entity
     [SerializeField] private ItemDetector _itemDetector;
     [SerializeField] private float _attackDamage;
     [SerializeField] private Eye _enemyFinder;
+    [SerializeField] private AbilityVisualizer _abilityVisualizer;
 
     private PlayerInput _playerInput;
     private SpriteBlinker _spriteBlinker;
     private BounceAttack _attack;
+    private VampirismAbility _ability;
     private Color _damageColorMultiplyer = new Color(1, 1, 1, 0.5f);
     private Color _HealColorMultiplyer = new Color(1f, 2f, 1f, 1f);
 
-    public event UnityAction ScoreChanged;
+    public event Action ScoreChanged;
 
     public int Score { get; private set; } = 0;
 
@@ -25,30 +27,26 @@ public class Player : Entity
         base.Awake();
         _playerInput = GetComponent<PlayerInput>();
         _spriteBlinker = GetComponent<SpriteBlinker>();
+        _enemyFinder.SetMask(new string[] { ObjectLayers.Enemy });
         _enemyFinder.LookDirection = Vector2.down;
-        _attack = new BounceAttack(_attackDamage, this, 70);
+        _attack = new BounceAttack(this, _attackDamage, 70);
+        _ability = new VampirismAbility(this, 5, 5, 3, 6);
     }
 
     private void OnEnable()
     {
-        Health.HealthIsOver += Death;
-        Health.TakedDamage += DamageResponse;
-        Health.TakedHeal += HealResponse;
+        SubscribeToHealth();
         _itemDetector.ItemDetected += TryPickupItem;
-        _playerInput.SendingJump += () => Mover.Jump();
-        _playerInput.SendingLeft += () => Mover.Move(Vector2.left);
-        _playerInput.SendingRight += () => Mover.Move(Vector2.right);
+        SubscribeToInput();
+        _abilityVisualizer.Subscribe(_ability);
     }
 
     private void OnDisable()
     {
-        Health.HealthIsOver -= Death;
-        Health.TakedDamage -= DamageResponse;
-        Health.TakedHeal -= HealResponse;
+        UnsubscribeToHealth();
         _itemDetector.ItemDetected -= TryPickupItem;
-        _playerInput.SendingJump -= () => Mover.Jump();
-        _playerInput.SendingLeft -= () => Mover.Move(Vector2.left);
-        _playerInput.SendingRight -= () => Mover.Move(Vector2.right);
+        UnsubscribeToInput();
+        _abilityVisualizer.Unsibscribe(_ability);
     }
 
     private void Update()
@@ -57,6 +55,36 @@ public class Player : Entity
         {
             _attack.DoAttack(enemy);
         }
+    }
+
+    private void SubscribeToHealth()
+    {
+        Health.HealthIsOver += Death;
+        Health.TakedDamage += DamageResponse;
+        Health.TakedHeal += HealResponse;
+    }
+
+    private void UnsubscribeToHealth()
+    {
+        Health.HealthIsOver -= Death;
+        Health.TakedDamage -= DamageResponse;
+        Health.TakedHeal -= HealResponse;
+    }
+
+    private void SubscribeToInput()
+    {
+        _playerInput.SendedJump += () => Mover.Jump();
+        _playerInput.SendedLeft += () => Mover.Move(Vector2.left);
+        _playerInput.SendedRight += () => Mover.Move(Vector2.right);
+        _playerInput.SendedAbility += () => _ability.Activate();
+    }
+
+    private void UnsubscribeToInput()
+    {
+        _playerInput.SendedJump -= () => Mover.Jump();
+        _playerInput.SendedLeft -= () => Mover.Move(Vector2.left);
+        _playerInput.SendedRight -= () => Mover.Move(Vector2.right);
+        _playerInput.SendedAbility -= () => _ability.Activate();
     }
 
     private void Death()

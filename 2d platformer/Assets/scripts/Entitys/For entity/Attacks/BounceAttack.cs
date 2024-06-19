@@ -6,7 +6,7 @@ public class BounceAttack : Attack
     private float _bounceForce;
     private Rigidbody2D _rigidbody2D;
 
-    public BounceAttack(float damage, Entity owner, float bounceForce) : base(damage, owner)
+    public BounceAttack(Entity owner, float damage, float bounceForce) : base(owner, damage)
     {
         _bounceForce = bounceForce;
 

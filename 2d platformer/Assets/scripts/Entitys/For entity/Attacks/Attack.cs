@@ -1,10 +1,8 @@
-using UnityEngine;
-
 public class Attack
 {
-    public Attack(float damage, Entity owner)
+    public Attack(Entity owner, float damage)
     {
-        Damage = Mathf.Max(0, damage);
+        Damage = damage;
         Owner = owner;
     }
 

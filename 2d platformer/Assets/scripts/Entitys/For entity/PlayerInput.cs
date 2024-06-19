@@ -1,29 +1,35 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class PlayerInput : MonoBehaviour
 {
     [SerializeField] private KeyCode _jump;
     [SerializeField] private KeyCode _moveLeft;
     [SerializeField] private KeyCode _moveRight;
+    [SerializeField] private KeyCode _activateAbility;
 
-    public event UnityAction SendingJump;
-    public event UnityAction SendingLeft;
-    public event UnityAction SendingRight;
+    public event Action SendedJump;
+    public event Action SendedLeft;
+    public event Action SendedRight;
+    public event Action SendedAbility;
 
     private void Update()
     {
         if (Input.GetKeyDown(_jump))
         {
-            SendingJump?.Invoke();
+            SendedJump?.Invoke();
         }
         else if(Input.GetKey(_moveLeft))
         {
-            SendingLeft?.Invoke();
+            SendedLeft?.Invoke();
         }
         else if(Input.GetKey(_moveRight))
         {
-            SendingRight?.Invoke();
+            SendedRight?.Invoke();
+        }
+        else if (Input.GetKeyDown(_activateAbility))
+        {
+            SendedAbility?.Invoke();
         }
     }
 }
