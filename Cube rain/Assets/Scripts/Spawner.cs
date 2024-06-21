@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
@@ -7,9 +8,9 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Vector3 _maxSpawnOffset;
     [SerializeField] private float _spawnRate;
 
-    private MyObjectPool<RainbowCube> _cubesPool;
+    private ObjectPool<RainbowCube> _cubesPool;
+    private Coroutine _getingCorutine;
     
-
     private void Awake()
     {
         _cubesPool = new(_cubePrefab);
@@ -17,40 +18,48 @@ public class Spawner : MonoBehaviour
 
     private void OnEnable()
     {
-        _cubesPool.Created += PoolOnCreate;
-        _cubesPool.Geted += PoolOnGet;
+        _cubesPool.Created += SubscribePool;
+        _cubesPool.Geted += Spawn;
+        _getingCorutine = StartCoroutine(GetingFromPool(_spawnRate));
     }
 
     private void OnDisable()
     {
-        _cubesPool.Created -= PoolOnCreate;
-        _cubesPool.Geted -= PoolOnGet;
+        _cubesPool.Created -= SubscribePool;
+        _cubesPool.Geted -= Spawn;
+        StopCoroutine(_getingCorutine);
     }
 
-    private void Start()
+    private IEnumerator GetingFromPool(float getRate)
     {
-        InvokeRepeating(nameof(GetFromPool), 0f, _spawnRate);
+        WaitForSeconds delay = new(getRate);
+
+        while (enabled)
+        {
+            _cubesPool.Get();
+            yield return delay;
+        }
     }
 
-    private void GetFromPool()
-    {
-        _cubesPool.Get();
-    }
-
-    private void PoolOnCreate(RainbowCube newCube)
+    private void SubscribePool(RainbowCube newCube)
     {
         newCube.Deactivated += _cubesPool.Release;
     }
 
-    private void PoolOnGet(RainbowCube cube)
+    private void Spawn(RainbowCube cube)
     {
         cube.Reset();
         Vector3 maxSpawnPosision = _spawnPoint.position + _maxSpawnOffset;
         Vector3 minSpawnPosition = _spawnPoint.position + (_maxSpawnOffset * -1);
-        float spawnPositionX = Random.Range(minSpawnPosition.x, maxSpawnPosision.x);
-        float spawnPositionY = Random.Range(minSpawnPosition.y, maxSpawnPosision.y);
-        float spawnPositionZ = Random.Range(minSpawnPosition.z, maxSpawnPosision.z);
-        cube.transform.position = new Vector3(spawnPositionX, spawnPositionY, spawnPositionZ);
-        cube.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        cube.transform.position = GetRandomVector(minSpawnPosition, maxSpawnPosision);
+    }
+
+    private Vector3 GetRandomVector(Vector3 minVector, Vector3 maxVector)
+    {
+        float x = Random.Range(minVector.x, maxVector.x);
+        float y = Random.Range(minVector.y, maxVector.y);
+        float z = Random.Range(minVector.z, maxVector.z);
+
+        return new Vector3(x, y, z);
     }
 }
