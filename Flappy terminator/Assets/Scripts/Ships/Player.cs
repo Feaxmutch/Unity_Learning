@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerInput))]
@@ -11,10 +13,12 @@ public class Player : Ship
     private PlayerInput _input;
     private Jumper _jumper;
 
+    public event Action Loosed;
+
     protected override void Awake()
     {
         base.Awake();
-        Initialize(_gameMode);
+        Initialize(_gameMode, Vector2.right);
     }
 
     protected override void OnEnable()
@@ -35,46 +39,57 @@ public class Player : Ship
         transform.position = _defaultPosition;
     }
 
+    protected override void OnShoot(Bullet bullet)
+    {
+        bullet.Shoot(this, typeof(Enemy), transform.position);
+    }
+
     protected override void Initialize()
     {
         base.Initialize();
         _jumper = new(Rigidbody, _jumpForce);
-        Mover.MoveDirection = Vector2.right;
         Rigidbody.gravityScale = _gravityScale;
         _input = GetComponent<PlayerInput>();
+    }
+
+    protected override void OnGameEnded()
+    {
+        base.OnGameEnded();
+        _input.enabled = false;
+    }
+
+    protected override void OnGamePreparedToStart()
+    {
+        base.OnGamePreparedToStart();
+        Rigidbody.gravityScale = 0;
+        gameObject.SetActive(true);
+    }
+
+    protected override void OnGameStarted()
+    {
+        base.OnGameStarted();
+        Rigidbody.gravityScale = _gravityScale;
+        _input.enabled = true;
+    }
+
+    private void OnDeactivated(Ship self)
+    {
+        Loosed.Invoke();
     }
 
     protected override void Subscribe()
     {
         base.Subscribe();
-
-        if (GameMode != null)
-        {
-            GameMode.PreparedToStart += () => Rigidbody.gravityScale = 0;
-            GameMode.PreparedToStart += () => gameObject.SetActive(true);
-            GameMode.Started += () => Rigidbody.gravityScale = _gravityScale;
-            GameMode.Started += () => _input.enabled = true;
-            GameMode.Ended += () => _input.enabled = false;
-        }
-
-        _input.SendedJump += _jumper.Jump;
-        _input.SendedShoot += Shoot;
+        _input.SubscribeToKey(_input.JumpKey, _jumper.Jump);
+        _input.SubscribeToKey(_input.ShootKey, Shoot);
+        Deactivated += OnDeactivated;
     }
 
     protected override void Unsubscribe()
     {
         base.Unsubscribe();
-
-        if (GameMode != null)
-        {
-            GameMode.PreparedToStart -= () => Rigidbody.gravityScale = 0;
-            GameMode.PreparedToStart -= () => gameObject.SetActive(true);
-            GameMode.Started -= () => Rigidbody.gravityScale = _gravityScale;
-            GameMode.Started -= () => _input.enabled = true;
-            GameMode.Ended -= () => _input.enabled = false;
-        }
-
-        _input.SendedJump -= _jumper.Jump;
-        _input.SendedShoot -= Shoot;
+        _input.UnsubscibeFromKey(_input.JumpKey, _jumper.Jump);
+        _input.UnsubscibeFromKey(_input.ShootKey, Shoot);
+        Deactivated -= OnDeactivated;
     }
 }

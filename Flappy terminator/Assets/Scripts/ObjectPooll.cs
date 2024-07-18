@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class ObjectPool<T> where T : Component
+public class ObjectPooll<T> where T : Component
 {
     private T _prefab;
     private Queue<T> _objects = new();
@@ -12,7 +12,7 @@ public class ObjectPool<T> where T : Component
     public event Action<T> Released;
     public event Action<T> Created;
 
-    public ObjectPool(T prefab)
+    public ObjectPooll(T prefab)
     {
         _prefab = prefab;
     }

@@ -9,7 +9,7 @@ public abstract class Ship : Initializable
     [SerializeField] private Bullet _bullet;
 
     private SpriteRenderer _spriteRenderer;
-    private ObjectPool<Bullet> _bulletPool;
+    private ObjectPooll<Bullet> _bulletPool;
 
     public event Action<Ship> Deactivated;
 
@@ -45,9 +45,12 @@ public abstract class Ship : Initializable
 
     }
 
-    public virtual void Initialize(GameMode gameMode)
+    public virtual void Initialize(GameMode gameMode, Vector2 moveDirection)
     {
+        Initialize();
+        Mover.Initialize(moveDirection, _ship.Speed);
         GameMode = gameMode;
+        Unsubscribe();
         Subscribe();
     }
 
@@ -58,16 +61,20 @@ public abstract class Ship : Initializable
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _spriteRenderer.sprite = _ship.Sprite;
         Mover = GetComponent<Mover>();
-        Mover.Speed = _ship.Speed;
         _bulletPool = new(_bullet);
         _bulletPool.Created += OnBulletCreated;
-        _bulletPool.Geted += (bullet) => bullet.Shoot(this, transform.position, Mover.MoveDirection);
+        _bulletPool.Geted += OnShoot;
     }
 
-    public void TakeHit(Bullet _)
+    public void TakeHit(Bullet bullet)
     {
-        Deactivate();
+        if (bullet.TargetType == GetType())
+        {
+            Deactivate();
+        }
     }
+
+    protected abstract void OnShoot(Bullet bullet);
 
     protected void Shoot()
     {
@@ -85,16 +92,32 @@ public abstract class Ship : Initializable
 
     private void OnBulletCreated(Bullet bullet)
     {
-        bullet.Initialize(GameMode);
+        bullet.Initialize(GameMode, Mover.MoveDirection);
         bullet.Deactivated += _bulletPool.Release;
+    }
+
+    protected virtual void OnGameEnded()
+    {
+        Deactivate();
+    }
+
+    protected virtual void OnGamePreparedToStart()
+    {
+        Reset();
+    }
+
+    protected virtual void OnGameStarted()
+    {
+
     }
 
     protected virtual void Subscribe()
     {
         if (GameMode != null)
         {
-            GameMode.PreparedToStart += Reset;
-            GameMode.Ended += Deactivate;
+            GameMode.Started += OnGameStarted;
+            GameMode.PreparedToStart += OnGamePreparedToStart;
+            GameMode.Ended += OnGameEnded;
         }
     }
 
@@ -102,8 +125,8 @@ public abstract class Ship : Initializable
     {
         if (GameMode != null)
         {
-            GameMode.PreparedToStart -= Reset;
-            GameMode.Ended -= Deactivate;
+            GameMode.PreparedToStart -= OnGamePreparedToStart;
+            GameMode.Ended -= OnGameEnded;
         }
     }
 }

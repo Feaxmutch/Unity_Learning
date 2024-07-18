@@ -10,9 +10,15 @@ public class Mover : Initializable
     private Rigidbody2D _rigidbody;
     private Vector2 _moveDirection;
 
-    public Vector2 MoveDirection { get => _moveDirection; set => _moveDirection = value.normalized; }
+    public Vector2 MoveDirection { get => _moveDirection; private set => _moveDirection = value.normalized; }
 
-    public float Speed { get => _speed; set => _speed = Mathf.Max(0, value); }
+    public float Speed { get => _speed; private set => _speed = Mathf.Max(0, value); }
+
+    public void Initialize(Vector2 moveDirection, float speed)
+    {
+        MoveDirection = moveDirection;
+        Speed = speed;
+    }
 
     protected override void Initialize()
     {
@@ -21,7 +27,7 @@ public class Mover : Initializable
 
     public void StartMoving()
     {
-        if (_move == null)
+        if (_move == null && _rigidbody != null)
         {
             _move = StartCoroutine(Move());
         }
@@ -29,14 +35,16 @@ public class Mover : Initializable
 
     public void StopMoving()
     {
-        _move = null;
+        if (_move != null)
+        {
+            StopCoroutine(_move);
+            _move = null;
+        }
     }
 
     private IEnumerator Move()
     {
-        yield return null;
-         
-        while (_move != null)
+        while (enabled)
         {
             _rigidbody.velocity = (MoveDirection * Speed);
             yield return null;

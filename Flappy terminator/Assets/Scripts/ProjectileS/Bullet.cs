@@ -11,14 +11,20 @@ public class Bullet : Initializable
     private Mover _mover;
     private SpriteRenderer _spriteRenderer;
     private Ship _owner;
+    private Type _targetType;
 
     public event Action<Bullet> Deactivated;
+
+    public Type TargetType { get => _targetType; }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.TryGetComponent(out Ship ship) && ship != _owner)
         {
-            ship.TakeHit(this);
+            if (ship.GetType() == _targetType)
+            {
+                ship.TakeHit(this);
+            }
         }
         else if (collision.TryGetComponent(out DeactivateZone _) == false)
         {
@@ -39,26 +45,27 @@ public class Bullet : Initializable
         _mover.StopMoving();
     }
 
-    public void Initialize(GameMode gameMode) 
+    public void Initialize(GameMode gameMode, Vector2 moveDirection) 
     {
         Initialize();
+        _mover.Initialize(moveDirection, _projectile.Speed);
         _gameMode = gameMode;
+        Unsubscribe();
         Subscribe();
     }
 
     protected override void Initialize()
     {
         _mover = GetComponent<Mover>();
-        _mover.Speed = _projectile.Speed;
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _spriteRenderer.sprite = _projectile.Sprite;
     }
 
-    public void Shoot(Ship owner, Vector2 startPosition, Vector2 direction)
+    public void Shoot(Ship owner, Type targetType, Vector2 startPosition)
     {
         _owner = owner;
+        _targetType = targetType;
         transform.position = startPosition;
-        _mover.MoveDirection = direction;
         _spriteRenderer.flipX = _mover.MoveDirection.x < 0;
         _mover.StartMoving();
     }

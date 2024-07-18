@@ -14,24 +14,24 @@ public class GameMode : MonoBehaviour
 
     private void OnEnable()
     {
-        _player.Deactivated += EndGame;
+        _player.Loosed += EndGame;
         _startButton.Clicked += OnClickToStart;
-        Started += () => _isActive = true;
-        Ended += () => _isActive = false;
+        Started += OnStarted;
+        Ended += OnEnded;
     }
 
     private void OnDisable()
     {
-        _player.Deactivated -= EndGame;
+        _player.Loosed -= EndGame;
         _startButton.Clicked -= OnClickToStart;
-        Started -= () => _isActive = true;
-        Ended -= () => _isActive = false;
+        Started -= OnStarted;
+        Ended -= OnEnded;
     }
 
     private void Start()
     {
         StartGame();
-        EndGame(_player);
+        EndGame();
     }
 
     private void StartGame()
@@ -42,7 +42,7 @@ public class GameMode : MonoBehaviour
         }
     }
 
-    private void EndGame(Ship _)
+    private void EndGame()
     {
         if (_isActive == true)
         {
@@ -54,5 +54,15 @@ public class GameMode : MonoBehaviour
     private void OnClickToStart()
     {
         StartGame();
+    }
+
+    private void OnStarted()
+    {
+        _isActive = true;
+    }
+
+    private void OnEnded()
+    {
+        _isActive = false;
     }
 }

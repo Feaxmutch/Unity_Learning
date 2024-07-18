@@ -199,6 +199,10 @@ PrefabInstance:
       propertyPath: _defaultPosition.x
       value: -7
       objectReference: {fileID: 0}
+    - target: {fileID: 1487827538851108956, guid: 443c321f6c78fe94bbe3d960865875dd, type: 3}
+      propertyPath: _enemies.Array.size
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 2405359454656652406, guid: 443c321f6c78fe94bbe3d960865875dd, type: 3}
       propertyPath: m_IsTrigger
       value: 1

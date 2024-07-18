@@ -11,6 +11,11 @@ public class ScoreViewer : MonoBehaviour
         _score.Changed += WhriteScore;
     }
 
+    private void OnDisable()
+    {
+        _score.Changed -= WhriteScore;
+    }
+
     private void WhriteScore()
     {
         _text.SetText($"{_score.Value}");

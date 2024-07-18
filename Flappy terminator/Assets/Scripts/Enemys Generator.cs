@@ -12,7 +12,7 @@ public class EnemysGenerator : MonoBehaviour
     [SerializeField] private Vector2 _pointOffset;
 
     private WaitForSeconds _wait;
-    private ObjectPool<Ship> _enemyPool;
+    private ObjectPooll<Ship> _enemyPool;
     private Coroutine _generate;
 
     public event Action EnemyDeactivated;
@@ -25,8 +25,8 @@ public class EnemysGenerator : MonoBehaviour
 
     private void OnEnable()
     {
-        _gameMode.Started += () => _generate = StartCoroutine(Generate());
-        _gameMode.Ended += () => StopCoroutine(_generate);
+        _gameMode.Started += OnGameStarted;
+        _gameMode.Ended += OnGameEnded;
         _enemyPool.Geted += PlaceEnemy;
         _enemyPool.Created += OnEnemyCreated;
         _enemyPool.Released += OnEnemyReleased;
@@ -34,8 +34,8 @@ public class EnemysGenerator : MonoBehaviour
 
     private void OnDisable()
     {
-        _gameMode.Started -= () => _generate = StartCoroutine(Generate());
-        _gameMode.Ended -= () => StopCoroutine(_generate);
+        _gameMode.Started -= OnGameStarted;
+        _gameMode.Ended -= OnGameEnded;
         _enemyPool.Geted -= PlaceEnemy;
         _enemyPool.Created -= OnEnemyCreated;
         _enemyPool.Released -= OnEnemyReleased;
@@ -57,12 +57,22 @@ public class EnemysGenerator : MonoBehaviour
 
     private void OnEnemyCreated(Ship enemy)
     {
-        enemy.Initialize(_gameMode);
+        enemy.Initialize(_gameMode, Vector2.left);
         enemy.Deactivated += _enemyPool.Release;
     }
 
     private void OnEnemyReleased(Ship enemy)
     {
         EnemyDeactivated.Invoke();
+    }
+
+    protected virtual void OnGameEnded()
+    {
+        StopCoroutine(_generate);
+    }
+
+    protected virtual void OnGameStarted()
+    {
+        _generate = StartCoroutine(Generate());
     }
 }

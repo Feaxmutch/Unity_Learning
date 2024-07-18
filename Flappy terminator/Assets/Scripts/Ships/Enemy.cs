@@ -20,10 +20,14 @@ public class Enemy : Ship
         StopCoroutine(_shooting);
     }
 
+    protected override void OnShoot(Bullet bullet)
+    {
+        bullet.Shoot(this, typeof(Player), transform.position);
+    }
+
     protected override void Initialize()
     {
         base.Initialize();
-        Mover.MoveDirection = Vector2.left;
         IsSpriteFlip = true;
     }
 
