@@ -15,7 +15,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private int _countSpawnObjects;
     [SerializeField] private bool _globalSpawn;
 
-    private ObjectPool<MonoBehaviour> _objectPool;
+    private UnityEngine.Pool.ObjectPool<MonoBehaviour> _objectPool;
     private Coroutine _spawnCoroutine;
 
     public float LifeTimeSeconds { get; private set; }
@@ -25,7 +25,7 @@ public class Spawner : MonoBehaviour
 
     private void Awake()
     {
-        _objectPool = new ObjectPool<MonoBehaviour>
+        _objectPool = new UnityEngine.Pool.ObjectPool<MonoBehaviour>
         (
             createFunc: () => Create(GetRandomPosition()),
             actionOnGet: (spawnObject) => ActionOnGet(spawnObject),

@@ -12,7 +12,7 @@ public class EnemysGenerator : MonoBehaviour
     [SerializeField] private Vector2 _pointOffset;
 
     private WaitForSeconds _wait;
-    private ObjectPooll<Ship> _enemyPool;
+    private ObjectPool<Ship> _enemyPool;
     private Coroutine _generate;
 
     public event Action EnemyDeactivated;

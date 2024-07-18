@@ -9,7 +9,7 @@ public abstract class Ship : Initializable
     [SerializeField] private Bullet _bullet;
 
     private SpriteRenderer _spriteRenderer;
-    private ObjectPooll<Bullet> _bulletPool;
+    private ObjectPool<Bullet> _bulletPool;
 
     public event Action<Ship> Deactivated;
 
