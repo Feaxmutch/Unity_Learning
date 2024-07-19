@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerInput))]
@@ -21,17 +20,6 @@ public class Player : Ship
         Initialize(_gameMode, Vector2.right);
     }
 
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-        Subscribe();
-    }
-
-    protected override void OnDisable()
-    {
-        base.OnDisable();
-        Unsubscribe();
-    }
 
     public override void Reset()
     {
