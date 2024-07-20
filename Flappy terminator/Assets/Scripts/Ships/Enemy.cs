@@ -7,6 +7,12 @@ public class Enemy : Ship
 
     private Coroutine _shooting;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        IsSpriteFlip = true;
+    }
+
     protected override void OnEnable()
     {
         base.OnEnable();
@@ -23,12 +29,6 @@ public class Enemy : Ship
     protected override void OnShoot(Bullet bullet)
     {
         bullet.Shoot(this, typeof(Player), transform.position);
-    }
-
-    protected override void Initialize()
-    {
-        base.Initialize();
-        IsSpriteFlip = true;
     }
 
     private IEnumerator Shooting()

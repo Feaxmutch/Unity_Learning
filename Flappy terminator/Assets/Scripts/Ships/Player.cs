@@ -17,6 +17,9 @@ public class Player : Ship
     protected override void Awake()
     {
         base.Awake();
+        _jumper = new(Rigidbody, _jumpForce);
+        Rigidbody.gravityScale = _gravityScale;
+        _input = GetComponent<PlayerInput>();
         Initialize(_gameMode, Vector2.right);
     }
 
@@ -30,14 +33,6 @@ public class Player : Ship
     protected override void OnShoot(Bullet bullet)
     {
         bullet.Shoot(this, typeof(Enemy), transform.position);
-    }
-
-    protected override void Initialize()
-    {
-        base.Initialize();
-        _jumper = new(Rigidbody, _jumpForce);
-        Rigidbody.gravityScale = _gravityScale;
-        _input = GetComponent<PlayerInput>();
     }
 
     protected override void OnGameEnded()

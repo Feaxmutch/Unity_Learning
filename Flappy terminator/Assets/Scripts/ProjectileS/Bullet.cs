@@ -3,7 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(Mover))]
 [RequireComponent(typeof(BoxCollider2D))]
-public class Bullet : Initializable
+public class Bullet : MonoBehaviour
 {
     [SerializeField] private ProjectileSO _projectile;
 
@@ -34,6 +34,13 @@ public class Bullet : Initializable
         Deactivate();
     }
 
+    private void Awake()
+    {
+        _mover = GetComponent<Mover>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _spriteRenderer.sprite = _projectile.Sprite;
+    }
+
     private void OnEnable()
     {
         Subscribe();
@@ -47,18 +54,10 @@ public class Bullet : Initializable
 
     public void Initialize(GameMode gameMode, Vector2 moveDirection) 
     {
-        Initialize();
         _mover.Initialize(moveDirection, _projectile.Speed);
         _gameMode = gameMode;
         Unsubscribe();
         Subscribe();
-    }
-
-    protected override void Initialize()
-    {
-        _mover = GetComponent<Mover>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        _spriteRenderer.sprite = _projectile.Sprite;
     }
 
     public void Shoot(Ship owner, Type targetType, Vector2 startPosition)

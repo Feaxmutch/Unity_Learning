@@ -6,7 +6,7 @@ public class GameMode : MonoBehaviour
     [SerializeField] private Player _player;
     [SerializeField] private StartButton _startButton;
 
-    private bool _isActive = false;
+    private bool _isActive = true;
 
     public event Action Ended;
     public event Action PreparedToStart;
@@ -30,7 +30,6 @@ public class GameMode : MonoBehaviour
 
     private void Start()
     {
-        StartGame();
         EndGame();
     }
 

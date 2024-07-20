@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Mover : Initializable
+public class Mover : MonoBehaviour
 {
     [SerializeField] private float _speed;
 
@@ -14,15 +14,15 @@ public class Mover : Initializable
 
     public float Speed { get => _speed; private set => _speed = Mathf.Max(0, value); }
 
+    private void Awake()
+    {
+        _rigidbody = GetComponent<Rigidbody2D>();
+    }
+
     public void Initialize(Vector2 moveDirection, float speed)
     {
         MoveDirection = moveDirection;
         Speed = speed;
-    }
-
-    protected override void Initialize()
-    {
-        _rigidbody = GetComponent<Rigidbody2D>();
     }
 
     public void StartMoving()

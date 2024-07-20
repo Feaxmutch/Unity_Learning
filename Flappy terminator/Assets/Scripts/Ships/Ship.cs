@@ -3,7 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer), typeof(BoxCollider2D))]
 [RequireComponent(typeof(Mover))]
-public abstract class Ship : Initializable
+public abstract class Ship : MonoBehaviour
 {
     [SerializeField] private ShipSO _ship;
     [SerializeField] private Bullet _bullet;
@@ -29,6 +29,15 @@ public abstract class Ship : Initializable
         }
     }
 
+    protected virtual void Awake()
+    {
+        Rigidbody = GetComponent<Rigidbody2D>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _spriteRenderer.sprite = _ship.Sprite;
+        Mover = GetComponent<Mover>();
+        _bulletPool = new(_bullet);
+    }
+
     protected virtual void OnEnable()
     {
         Subscribe();
@@ -47,23 +56,10 @@ public abstract class Ship : Initializable
 
     public virtual void Initialize(GameMode gameMode, Vector2 moveDirection)
     {
-        Initialize();
         Mover.Initialize(moveDirection, _ship.Speed);
         GameMode = gameMode;
         Unsubscribe();
         Subscribe();
-    }
-
-
-    protected override void Initialize()
-    {
-        Rigidbody = GetComponent<Rigidbody2D>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        _spriteRenderer.sprite = _ship.Sprite;
-        Mover = GetComponent<Mover>();
-        _bulletPool = new(_bullet);
-        _bulletPool.Created += OnBulletCreated;
-        _bulletPool.Geted += OnShoot;
     }
 
     public void TakeHit(Bullet bullet)
@@ -83,7 +79,7 @@ public abstract class Ship : Initializable
 
     private void Deactivate()
     {
-        if (gameObject.active)
+        if (gameObject.activeSelf)
         {
             gameObject.SetActive(false);
             Deactivated?.Invoke(this);
@@ -119,14 +115,21 @@ public abstract class Ship : Initializable
             GameMode.PreparedToStart += OnGamePreparedToStart;
             GameMode.Ended += OnGameEnded;
         }
+
+        _bulletPool.Created += OnBulletCreated;
+        _bulletPool.Geted += OnShoot;
     }
 
     protected virtual void Unsubscribe()
     {
         if (GameMode != null)
         {
+            GameMode.Started -= OnGameStarted;
             GameMode.PreparedToStart -= OnGamePreparedToStart;
             GameMode.Ended -= OnGameEnded;
         }
+
+        _bulletPool.Created -= OnBulletCreated;
+        _bulletPool.Geted -= OnShoot;
     }
 }

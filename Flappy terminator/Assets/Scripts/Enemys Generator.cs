@@ -30,6 +30,7 @@ public class EnemysGenerator : MonoBehaviour
         _enemyPool.Geted += PlaceEnemy;
         _enemyPool.Created += OnEnemyCreated;
         _enemyPool.Released += OnEnemyReleased;
+        
     }
 
     private void OnDisable()
@@ -53,12 +54,12 @@ public class EnemysGenerator : MonoBehaviour
     private void PlaceEnemy(Ship enemy)
     {
         enemy.transform.position = _spawnPoint + Random.insideUnitCircle * _pointOffset;
+        enemy.Deactivated += OnEnemyDeactivated;
     }
 
     private void OnEnemyCreated(Ship enemy)
     {
         enemy.Initialize(_gameMode, Vector2.left);
-        enemy.Deactivated += _enemyPool.Release;
     }
 
     private void OnEnemyReleased(Ship enemy)
@@ -66,9 +67,18 @@ public class EnemysGenerator : MonoBehaviour
         EnemyDeactivated.Invoke();
     }
 
+    private void OnEnemyDeactivated(Ship enemy)
+    {
+        _enemyPool.Release(enemy);
+        enemy.Deactivated -= OnEnemyDeactivated;
+    }
+
     protected virtual void OnGameEnded()
     {
-        StopCoroutine(_generate);
+        if (_generate != null)
+        {
+            StopCoroutine(_generate);
+        }
     }
 
     protected virtual void OnGameStarted()
