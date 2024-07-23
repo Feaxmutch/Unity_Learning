@@ -23,7 +23,6 @@ public class Player : Ship
         Initialize(_gameMode, Vector2.right);
     }
 
-
     public override void Reset()
     {
         base.Reset();

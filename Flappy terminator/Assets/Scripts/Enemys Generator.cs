@@ -30,7 +30,6 @@ public class EnemysGenerator : MonoBehaviour
         _enemyPool.Geted += PlaceEnemy;
         _enemyPool.Created += OnEnemyCreated;
         _enemyPool.Released += OnEnemyReleased;
-        
     }
 
     private void OnDisable()
