@@ -2,7 +2,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TextEditor : DOTweenAnimator
+public class TextReplacer : DOTweenAnimator
 {
     [SerializeField] private Text _text;
 
