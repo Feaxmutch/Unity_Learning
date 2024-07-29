@@ -3,28 +3,29 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshRenderer))]
-public class Rainbow : MonoBehaviour
+public class Rainbow : DOTweenAnimator
 {
-    [SerializeField] private float _duration;
-
     private MeshRenderer _meshRenderer;
+    private Tweener _tweener;
 
     private void Awake()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
+        _tweener = _meshRenderer.material.DOColor(Random.ColorHSV(), Duration).SetAutoKill(false);
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        StartCoroutine(RepitedColoring());
+        _tweener.onPause += RestartTweener;
     }
 
-    private IEnumerator RepitedColoring()
+    private void OnDisable()
     {
-        while (enabled)
-        {
-            Tween tween = _meshRenderer.material.DOColor(Random.ColorHSV(), _duration);
-            yield return new WaitWhile(() => tween.active);
-        }
+        _tweener.onPause -= RestartTweener;
+    }
+
+    private void RestartTweener()
+    {
+        _tweener.ChangeEndValue(Random.ColorHSV(), true).Restart();
     }
 }

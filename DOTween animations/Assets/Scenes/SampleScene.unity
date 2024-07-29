@@ -155,8 +155,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eef78461cc8553644abb5837d06d1ded, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Duration>k__BackingField: 0.01
   _axisRotation: {x: 1, y: 0, z: 0}
-  _duration: 0.01
 --- !u!65 &490398500
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -362,7 +362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 946adb48f41b032459ed18903467fd27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _duration: 1
+  <Duration>k__BackingField: 1
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,8 +651,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74fa05e173c27bb4db2f887eef0dc437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Duration>k__BackingField: 0.5
   _scaleOffset: {x: 1, y: 1, z: 1}
-  _duration: 0.5
 --- !u!114 &1573541630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -665,8 +665,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eef78461cc8553644abb5837d06d1ded, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Duration>k__BackingField: 0.01
   _axisRotation: {x: 1, y: 0, z: 0}
-  _duration: 0.01
 --- !u!114 &1573541631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -679,8 +679,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd4f75e7e6ed6104a967e753c82d91e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Duration>k__BackingField: 0.5
   _offset: {x: 4, y: 0, z: 0}
-  _duration: 0.5
 --- !u!65 &1573541632
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -799,8 +799,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd4f75e7e6ed6104a967e753c82d91e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Duration>k__BackingField: 0.5
   _offset: {x: 4, y: 0, z: 0}
-  _duration: 0.5
 --- !u!135 &1754773457
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1002,8 +1002,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 657a23a228f4e3d48a980e980b97c6b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Duration>k__BackingField: 2
   _text: {fileID: 1993219682}
-  _duration: 2
 --- !u!1 &1871610708
 GameObject:
   m_ObjectHideFlags: 0
@@ -1036,8 +1036,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74fa05e173c27bb4db2f887eef0dc437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Duration>k__BackingField: 0.5
   _scaleOffset: {x: 1, y: 1, z: 1}
-  _duration: 0.5
 --- !u!136 &1871610710
 CapsuleCollider:
   m_ObjectHideFlags: 0
