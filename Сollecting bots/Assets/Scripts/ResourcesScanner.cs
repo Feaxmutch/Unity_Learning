@@ -5,7 +5,7 @@ public class ResourcesScanner : MonoBehaviour
 {
     [SerializeField] private float _scanRadius;
 
-    public event Action<Vector3> Founded;
+    public event Action<Transform> Founded;
 
     public void Scan()
     {
@@ -15,7 +15,7 @@ public class ResourcesScanner : MonoBehaviour
         {
             if (collider.TryGetComponent(out Resource resource))
             {
-                Founded.Invoke(resource.transform.position);
+                Founded.Invoke(resource.transform);
             }
         }
     }

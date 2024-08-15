@@ -7,6 +7,8 @@ public class ResourcesGenerator : MonoBehaviour
 {
     [SerializeField] private Resource _resource;
     [SerializeField] private float _spawnDelay;
+    [SerializeField] private float _minDelay;
+    [SerializeField] private float _speedMiltiplyer;
 
     private ObjectPool<Resource> _resourcesPool;
     private BoxCollider _spawnArea;
@@ -15,13 +17,18 @@ public class ResourcesGenerator : MonoBehaviour
     {
         _resourcesPool = new(_resource);
         _spawnArea = GetComponent<BoxCollider>();
-        
     }
     
     private void OnEnable()
     {
         _resourcesPool.Geted += TrySpawn;
         _resourcesPool.Released += UnsubscribePool;
+    }
+
+    private void OnValidate()
+    {
+        _minDelay = Mathf.Min(_minDelay, _spawnDelay);
+        _spawnDelay = Mathf.Max(_minDelay, _spawnDelay);
     }
 
     private void Start()
@@ -38,6 +45,8 @@ public class ResourcesGenerator : MonoBehaviour
         if (colliders.Where(collider => collider.isTrigger == false).Count() == 0)
         {
             resource.transform.position = spawnPosition;
+            resource.Reset();
+            _spawnDelay = Mathf.Max(_minDelay, _spawnDelay / _speedMiltiplyer);
         }
         else
         {
@@ -57,12 +66,10 @@ public class ResourcesGenerator : MonoBehaviour
 
     private IEnumerator Generating()
     {
-        WaitForSeconds delay = new(_spawnDelay);
-
         while (enabled)
         {
             _resourcesPool.Get();
-            yield return delay;
+            yield return new WaitForSeconds(_spawnDelay);
         }
     }
 }

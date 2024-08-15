@@ -989,6 +989,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _resource: {fileID: 933569163998545759, guid: c6039652a23c69f4999fe9ccd6e346da, type: 3}
   _spawnDelay: 3
+  _minDelay: 0.3
+  _speedMiltiplyer: 1.05
 --- !u!65 &1748337919
 BoxCollider:
   m_ObjectHideFlags: 0

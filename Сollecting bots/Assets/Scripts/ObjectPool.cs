@@ -17,7 +17,7 @@ public class ObjectPool<T> where T : Component
         _prefab = prefab;
     }
 
-    public void Get()
+    public Component Get()
     {
         if (_objects.Count == 0)
         {
@@ -28,6 +28,7 @@ public class ObjectPool<T> where T : Component
         getedComponent.gameObject.SetActive(true);
         _activeObjects.Add(getedComponent);
         Geted?.Invoke(getedComponent);
+        return getedComponent;
     }
 
     public void Release(T component)

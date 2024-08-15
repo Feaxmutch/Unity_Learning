@@ -11,17 +11,14 @@ public class Base : MonoBehaviour
     [SerializeField] private ResourcesScanner _scanner;
     [SerializeField] private Transform _botSpawnPoint;
 
-    private List<Resource> _resources = new();
-    private Queue<Vector3> _resourcesPositions = new();
+    private List<Transform> _resourcesPositions = new();
     private WaitForSeconds _commandsDelay = new (0.2f);
-    private WaitForSeconds _scanningDelay = new (5);
     private int _botPrice = 3;
     private Vector3 _spawnAreaSize = Vector3.one;
 
-
     public event Action ResourcesChanged;
 
-    public int ResourcesCount { get => _resources.Count; }
+    public int ResourcesCount { get; private set; }
 
     private void OnEnable()
     {
@@ -31,7 +28,7 @@ public class Base : MonoBehaviour
         foreach (var bot in _bots)
         {
             bot.GrappedResource += SendMoveToBase;
-            bot.DroppedResource += SendMoveToResource;
+            bot.GivedResource += SendMoveToResource;
         }
     }
 
@@ -40,31 +37,21 @@ public class Base : MonoBehaviour
         _scanner.Founded -= AddResourcePosition;
         ResourcesChanged -= TryBuyBot;
 
-
         foreach (var bot in _bots)
         {
             bot.GrappedResource -= SendMoveToBase;
-            bot.DroppedResource -= SendMoveToResource;
+            bot.GivedResource -= SendMoveToResource;
         }
     }
 
     private void Start()
     {
         StartCoroutine(CommandingTheIdleBots());
-        StartCoroutine(ScanningResources());
-    }
-
-    private void OnTriggerEnter(Collider collider)
-    {
-        if (collider.gameObject.TryGetComponent(out Resource resource))
-        {
-            TakeResource(resource);
-        }
     }
 
     public void TakeResource(Resource resource)
     {
-        _resources.Add(resource);
+        ResourcesCount++;
         resource.gameObject.SetActive(false);
         ResourcesChanged.Invoke();
     }
@@ -77,33 +64,48 @@ public class Base : MonoBehaviour
 
             if (colliders.Where(collider => collider.isTrigger == false).Count() == 0)
             {
-                _bots.Add(Instantiate(_botPrefab, _botSpawnPoint.position, Quaternion.Euler(Vector3.zero)));
+                Bot newBot = Instantiate(_botPrefab, _botSpawnPoint.position, Quaternion.Euler(Vector3.zero));
+                newBot.Initialize(this);
+                _bots.Add(newBot);
             }
 
-            _resources.RemoveRange(0, _botPrice);
+            ResourcesCount -= _botPrice;
             ResourcesChanged?.Invoke();
         }
     }
 
-    private void AddResourcePosition(Vector3 position)
+    private void AddResourcePosition(Transform transform)
     {
-        if (_resourcesPositions.Contains(position) == false)
+        if (_resourcesPositions.Contains(transform) == false)
         {
-            _resourcesPositions.Enqueue(position);
+            _resourcesPositions.Add(transform);
         }
     }
 
     private void SendMoveToResource(Bot bot)
     {
+        for (int i = 0; i < _bots.Count; i++)
+        {
+            if (_bots[i].CurrentTarget != null)
+            {
+                if (_resourcesPositions.Contains(_bots[i].CurrentTarget))
+                {
+                    _resourcesPositions.Remove(_bots[i].CurrentTarget);
+                }
+            }
+        }
+
         if (_resourcesPositions.Count > 0)
         {
-            bot.MoveTo(_resourcesPositions.Dequeue());
+            Transform target = _resourcesPositions[0];
+            _resourcesPositions.RemoveAt(0);
+            bot.MoveTo(target);
         }
     }
 
     private void SendMoveToBase(Bot bot)
     {
-        bot.MoveTo(transform.position);
+        bot.MoveTo(transform);
     }
 
     private IEnumerator CommandingTheIdleBots()
@@ -112,13 +114,14 @@ public class Base : MonoBehaviour
         {
             for (int i = _bots.Count - 1; i >= 0; i--)
             {
-                if (_bots[i].IsHoldingResource == false && _bots[i].IsMooving == false)
+                if (_bots[i].IsHoldingResource == false && _bots[i].CurrentTarget == null)
                 {
+                    _scanner.Scan();
                     SendMoveToResource(_bots[i]);
                     yield return null;
                 }
 
-                if (_bots[i].IsHoldingResource == true && _bots[i].IsMooving == false)
+                if (_bots[i].IsHoldingResource == true)
                 {
                     SendMoveToBase(_bots[i]);
                     yield return null;
@@ -126,15 +129,6 @@ public class Base : MonoBehaviour
             }
 
             yield return _commandsDelay;
-        }
-    }
-
-    private IEnumerator ScanningResources()
-    {
-        while (enabled)
-        {
-            _scanner.Scan();
-            yield return _scanningDelay;
         }
     }
 }
