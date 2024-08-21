@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,14 +7,12 @@ using UnityEngine.AI;
 public class Bot : MonoBehaviour
 {
     [SerializeField] private Transform _grapPoint;
-    [SerializeField] private Base _base;
 
+    private Base _base;
+    private List<WaitingArea> _waitingAreas;
     private NavMeshAgent _agent;
     private FixedJoint _joint;
     private Resource _resource;
-
-    public event Action<Bot> GrappedResource;
-    public event Action<Bot> GivedResource;
 
     public bool IsHoldingResource { get => _resource != null; }
 
@@ -29,37 +28,37 @@ public class Bot : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (CurrentTarget != null)
-        {
-            _agent.destination = CurrentTarget.position;
-        }
-        else
-        {
-            _agent.destination = transform.position;
-        }
+        UpdateDestination();
     }
 
     private void OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.TryGetComponent(out Resource resource) && IsHoldingResource == false)
+        if (IsHoldingResource)
         {
-            if (resource.transform == CurrentTarget)
+            if (collider.gameObject.TryGetComponent(out Base @base))
             {
-                GrapResource(resource);
+                if (@base == _base)
+                {
+                    GiveResource();
+                }
             }
         }
-        else if (collider.gameObject.TryGetComponent(out Base @base) && IsHoldingResource == true)
+        else
         {
-            if (@base == _base)
+            if (collider.gameObject.TryGetComponent(out Resource resource))
             {
-                GiveResource();
+                if (resource.transform == CurrentTarget)
+                {
+                    GrapResource(resource);
+                }
             }
         }
     }
 
-    public void Initialize(Base @base)
+    public void Initialize(Base @base, List<WaitingArea> waitingAreas)
     {
         _base = @base;
+        _waitingAreas = waitingAreas;
     }
 
     public void MoveTo(Transform target)
@@ -71,10 +70,10 @@ public class Bot : MonoBehaviour
     {
         resource.transform.position = _grapPoint.position;
         resource.transform.rotation = _grapPoint.rotation;
-        _joint.connectedBody = resource.GetComponent<Rigidbody>();
+        _joint.connectedBody = resource.Rigidbody;
         _resource = resource;
         _resource.Collider.enabled = false;
-        GrappedResource?.Invoke(this);
+        MoveTo(_base.transform);
     }
 
     private void GiveResource()
@@ -90,7 +89,35 @@ public class Bot : MonoBehaviour
             _joint.connectedBody = null;
             _resource = null;
             CurrentTarget = null;
-            GivedResource?.Invoke(this);
+        }
+    }
+
+    private void UpdateDestination()
+    {
+        if (CurrentTarget != null)
+        {
+            _agent.destination = CurrentTarget.position;
+        }
+        else
+        {
+            foreach (var area in _waitingAreas)
+            {
+                if (area.IsInArea(this))
+                {
+                    return;
+                }
+            }
+
+            foreach (var area in _waitingAreas)
+            {
+                if (area.IsFree)
+                {
+                    _agent.destination = area.transform.position;
+                    return;
+                }
+            }
+
+            _agent.destination = transform.position;
         }
     }
 }

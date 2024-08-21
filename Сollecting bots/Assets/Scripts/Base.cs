@@ -10,6 +10,7 @@ public class Base : MonoBehaviour
     [SerializeField] private Bot _botPrefab;
     [SerializeField] private ResourcesScanner _scanner;
     [SerializeField] private Transform _botSpawnPoint;
+    [SerializeField] private List<WaitingArea> _waitingAreas;
 
     private List<Transform> _resourcesPositions = new();
     private WaitForSeconds _commandsDelay = new (0.2f);
@@ -24,29 +25,22 @@ public class Base : MonoBehaviour
     {
         _scanner.Founded += AddResourcePosition;
         ResourcesChanged += TryBuyBot;
-
-        foreach (var bot in _bots)
-        {
-            bot.GrappedResource += SendMoveToBase;
-            bot.GivedResource += SendMoveToResource;
-        }
     }
 
     private void OnDisable()
     {
         _scanner.Founded -= AddResourcePosition;
         ResourcesChanged -= TryBuyBot;
-
-        foreach (var bot in _bots)
-        {
-            bot.GrappedResource -= SendMoveToBase;
-            bot.GivedResource -= SendMoveToResource;
-        }
     }
 
     private void Start()
     {
         StartCoroutine(CommandingTheIdleBots());
+
+        foreach (var bot in _bots)
+        {
+            bot.Initialize(this, _waitingAreas);
+        }
     }
 
     public void TakeResource(Resource resource)
@@ -65,7 +59,7 @@ public class Base : MonoBehaviour
             if (colliders.Where(collider => collider.isTrigger == false).Count() == 0)
             {
                 Bot newBot = Instantiate(_botPrefab, _botSpawnPoint.position, Quaternion.Euler(Vector3.zero));
-                newBot.Initialize(this);
+                newBot.Initialize(this, _waitingAreas);
                 _bots.Add(newBot);
             }
 
@@ -103,11 +97,6 @@ public class Base : MonoBehaviour
         }
     }
 
-    private void SendMoveToBase(Bot bot)
-    {
-        bot.MoveTo(transform);
-    }
-
     private IEnumerator CommandingTheIdleBots()
     {
         while (enabled)
@@ -121,11 +110,6 @@ public class Base : MonoBehaviour
                     yield return null;
                 }
 
-                if (_bots[i].IsHoldingResource == true)
-                {
-                    SendMoveToBase(_bots[i]);
-                    yield return null;
-                }
             }
 
             yield return _commandsDelay;
