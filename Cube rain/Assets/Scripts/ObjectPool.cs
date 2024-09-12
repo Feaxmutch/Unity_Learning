@@ -12,12 +12,16 @@ public class ObjectPool<T> where T : Component
     public event Action<T> Released;
     public event Action<T> Created;
 
+    public int ActiveObjectsCount { get => _activeObjects.Count; }
+
+    public int CreatedObjectsCount { get => _objects.Count + _activeObjects.Count; }
+
     public ObjectPool(T prefab)
     {
         _prefab = prefab;
     }
 
-    public void Get()
+    public T Get()
     {
         if (_objects.Count == 0)
         {
@@ -28,6 +32,7 @@ public class ObjectPool<T> where T : Component
         getedComponent.gameObject.SetActive(true);
         _activeObjects.Add(getedComponent);
         Geted?.Invoke(getedComponent);
+        return getedComponent;
     }
 
     public void Release(T component)

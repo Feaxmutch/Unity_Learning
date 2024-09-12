@@ -1,65 +1,45 @@
-using System.Collections;
 using UnityEngine;
 
-public class Spawner : MonoBehaviour
+public abstract class Spawner : MonoBehaviour
 {
-    [SerializeField] private RainbowCube _cubePrefab;
-    [SerializeField] private Transform _spawnPoint;
-    [SerializeField] private Vector3 _maxSpawnOffset;
-    [SerializeField] private float _spawnRate;
+    private PoollableObject _prefab;
 
-    private ObjectPool<RainbowCube> _cubesPool;
-    private Coroutine _getingCorutine;
-    
-    private void Awake()
+    public ObjectPool<PoollableObject> Pool { get; private set; }
+
+    public int SpawnedObjectsCount { get; private set; }
+
+    protected virtual void Awake()
     {
-        _cubesPool = new(_cubePrefab);
+        Pool = new(_prefab);
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
-        _cubesPool.Created += SubscribePool;
-        _cubesPool.Geted += Spawn;
-        _getingCorutine = StartCoroutine(GetingFromPool(_spawnRate));
+        Pool.Released += UnsubscribePool;
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
-        _cubesPool.Created -= SubscribePool;
-        _cubesPool.Geted -= Spawn;
-        StopCoroutine(_getingCorutine);
+        Pool.Released -= UnsubscribePool;
     }
 
-    private IEnumerator GetingFromPool(float getRate)
+    protected void SetPrefab(PoollableObject newPrefab)
     {
-        WaitForSeconds delay = new(getRate);
-
-        while (enabled)
-        {
-            _cubesPool.Get();
-            yield return delay;
-        }
+        _prefab = newPrefab;
     }
 
-    private void SubscribePool(RainbowCube newCube)
+    protected PoollableObject Spawn(Vector3 spawnPosition)
     {
-        newCube.Deactivated += _cubesPool.Release;
+        PoollableObject newObject = Pool.Get();
+        newObject.Reset();
+        newObject.transform.position = spawnPosition;
+        newObject.Deactivated += Pool.Release;
+        SpawnedObjectsCount++;
+        return newObject;
     }
 
-    private void Spawn(RainbowCube cube)
+    private void UnsubscribePool(PoollableObject obj)
     {
-        cube.Reset();
-        Vector3 maxSpawnPosision = _spawnPoint.position + _maxSpawnOffset;
-        Vector3 minSpawnPosition = _spawnPoint.position + (_maxSpawnOffset * -1);
-        cube.transform.position = GetRandomVector(minSpawnPosition, maxSpawnPosision);
-    }
-
-    private Vector3 GetRandomVector(Vector3 minVector, Vector3 maxVector)
-    {
-        float x = Random.Range(minVector.x, maxVector.x);
-        float y = Random.Range(minVector.y, maxVector.y);
-        float z = Random.Range(minVector.z, maxVector.z);
-
-        return new Vector3(x, y, z);
+        obj.Deactivated -= Pool.Release;
     }
 }

@@ -1,10 +1,9 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(Rigidbody))]
-public class RainbowCube : MonoBehaviour
+public class RainbowCube : PoollableObject
 {
     [SerializeField] float _minLifeTime = 2f;
     [SerializeField] float _maxLifeTime = 5f;
@@ -13,7 +12,7 @@ public class RainbowCube : MonoBehaviour
     private Rigidbody _rigidbody;
     private bool _isToched = false;
 
-    public event Action<RainbowCube> Deactivated;
+    public Rigidbody Rigidbody { get => _rigidbody; }
 
     private void Awake()
     {
@@ -34,7 +33,7 @@ public class RainbowCube : MonoBehaviour
         }
     }
 
-    public void Reset()
+    public override void Reset()
     {
         _material.color = new Color(1f, 1f, 1f);
         _isToched = false;
@@ -44,7 +43,6 @@ public class RainbowCube : MonoBehaviour
     private IEnumerator DeactivatingDelay()
     {
         yield return new WaitForSeconds(UnityEngine.Random.Range(_minLifeTime, _maxLifeTime));
-        gameObject.SetActive(false);
-        Deactivated?.Invoke(this);
+        Deactivate();
     }
 }
