@@ -5,10 +5,7 @@ public abstract class PoollableObject : MonoBehaviour
 {
     public event Action<PoollableObject> Deactivated;
 
-    public virtual void Reset()
-    {
-        
-    }
+    public abstract void Reset();
 
     public void Deactivate()
     {

@@ -11,14 +11,6 @@ public class CubeSpawner : Spawner
 
     private Coroutine _cubeSpawning;
 
-    public event Action<RainbowCube> CubeSpawned;
-
-    protected override void Awake()
-    {
-        SetPrefab(_cubePrefab);
-        base.Awake();
-    }
-
     protected override void OnEnable()
     {
         base.OnEnable();
@@ -31,6 +23,12 @@ public class CubeSpawner : Spawner
         StopCoroutine(_cubeSpawning);
     }
 
+    protected override void Initialize()
+    {
+        SetPrefab(_cubePrefab);
+        base.Initialize();
+    }
+
     private IEnumerator CubesSpawning(float spawnDelay)
     {
         WaitForSeconds delay = new(spawnDelay);
@@ -40,7 +38,6 @@ public class CubeSpawner : Spawner
             Vector2 spawnPoint2D = Random.insideUnitCircle * _spawnRadius;
             Vector3 spawnPosition = new(spawnPoint2D.x, transform.position.y, spawnPoint2D.y);
             RainbowCube newCube = Spawn(spawnPosition) as RainbowCube;
-            CubeSpawned?.Invoke(newCube);
             yield return delay;
         }
     }

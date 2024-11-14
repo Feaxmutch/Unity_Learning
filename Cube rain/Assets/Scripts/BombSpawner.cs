@@ -5,25 +5,25 @@ public class BombSpawner : Spawner
     [SerializeField] private Bomb _BombPrefab;
     [SerializeField] private CubeSpawner _spawner;
 
-    protected override void Awake()
-    {
-        SetPrefab(_BombPrefab);
-        base.Awake();
-    }
-
     protected override void OnEnable()
     {
         base.OnEnable();
-        _spawner.CubeSpawned += Subscribe;
+        _spawner.ObjectSpawned += Subscribe;
     }
 
     protected override void OnDisable()
     {
         base.OnDisable();
-        _spawner.CubeSpawned -= Subscribe;
+        _spawner.ObjectSpawned -= Subscribe;
     }
 
-    private void Subscribe(RainbowCube cube)
+    protected override void Initialize()
+    {
+        SetPrefab(_BombPrefab);
+        base.Initialize();
+    }
+
+    private void Subscribe(PoollableObject cube)
     {
         cube.Deactivated += SpawnBomb;
     }

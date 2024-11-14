@@ -1,16 +1,21 @@
+using System;
 using UnityEngine;
 
-public abstract class Spawner : MonoBehaviour
+public abstract class Spawner : MonoBehaviour, IInitializeble
 {
     private PoollableObject _prefab;
 
+    public event Action<PoollableObject> ObjectSpawned;
+    public event Action SpawnedObjectsChanged;
+    public event Action Initialized;
+
     public ObjectPool<PoollableObject> Pool { get; private set; }
 
-    public int SpawnedObjectsCount { get; private set; }
+    public int SpawnedObjects { get; private set; }
 
     protected virtual void Awake()
     {
-        Pool = new(_prefab);
+        Initialize();
     }
 
     protected virtual void OnEnable()
@@ -21,6 +26,12 @@ public abstract class Spawner : MonoBehaviour
     protected virtual void OnDisable()
     {
         Pool.Released -= UnsubscribePool;
+    }
+
+    protected virtual void Initialize()
+    {
+        Pool = new(_prefab);
+        Initialized?.Invoke();
     }
 
     protected void SetPrefab(PoollableObject newPrefab)
@@ -34,7 +45,8 @@ public abstract class Spawner : MonoBehaviour
         newObject.Reset();
         newObject.transform.position = spawnPosition;
         newObject.Deactivated += Pool.Release;
-        SpawnedObjectsCount++;
+        SpawnedObjects++;
+        ObjectSpawned?.Invoke(newObject);
         return newObject;
     }
 

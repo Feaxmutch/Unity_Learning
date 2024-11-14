@@ -11,10 +11,12 @@ public class ObjectPool<T> where T : Component
     public event Action<T> Geted;
     public event Action<T> Released;
     public event Action<T> Created;
+    public event Action ActiveCountChanged;
+    public event Action CreatedCountChanged;
 
-    public int ActiveObjectsCount { get => _activeObjects.Count; }
+    public int ActiveObjects { get => _activeObjects.Count; }
 
-    public int CreatedObjectsCount { get => _objects.Count + _activeObjects.Count; }
+    public int CreatedObjects { get => _objects.Count + _activeObjects.Count; }
 
     public ObjectPool(T prefab)
     {
@@ -32,6 +34,7 @@ public class ObjectPool<T> where T : Component
         getedComponent.gameObject.SetActive(true);
         _activeObjects.Add(getedComponent);
         Geted?.Invoke(getedComponent);
+        ActiveCountChanged?.Invoke();
         return getedComponent;
     }
 
@@ -43,6 +46,7 @@ public class ObjectPool<T> where T : Component
             component.gameObject.SetActive(false);
             _objects.Enqueue(component);
             Released?.Invoke(component);
+            ActiveCountChanged?.Invoke();
         }
     }
 
@@ -52,5 +56,6 @@ public class ObjectPool<T> where T : Component
         newComponent.gameObject.SetActive(false);
         _objects.Enqueue(newComponent);
         Created?.Invoke(newComponent);
+        CreatedCountChanged?.Invoke();
     }
 }

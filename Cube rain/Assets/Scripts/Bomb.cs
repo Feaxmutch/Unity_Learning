@@ -35,7 +35,6 @@ public class Bomb : PoollableObject
 
     private void Explose()
     {
-        List<RainbowCube> cubes = new();
         Collider[] cubeColliders = Physics.OverlapSphere(transform.position, _exploseRadius).
             Where(collider => collider.TryGetComponent(out RainbowCube _)).ToArray();
 
