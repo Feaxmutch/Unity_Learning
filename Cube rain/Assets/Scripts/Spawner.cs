@@ -46,6 +46,7 @@ public abstract class Spawner : MonoBehaviour, IInitializeble
         newObject.transform.position = spawnPosition;
         newObject.Deactivated += Pool.Release;
         SpawnedObjects++;
+        SpawnedObjectsChanged?.Invoke();
         ObjectSpawned?.Invoke(newObject);
         return newObject;
     }
