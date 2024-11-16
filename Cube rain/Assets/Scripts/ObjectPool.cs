@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool<T> where T : Component
+public class ObjectPool<T> : IPoolCounter where T : PoollableObject
 {
     private T _prefab;
-    private Queue<T> _objects = new();
+    private Queue<T> _inactiveobjects = new();
     private List<T> _activeObjects = new();
 
     public event Action<T> Geted;
@@ -16,7 +16,7 @@ public class ObjectPool<T> where T : Component
 
     public int ActiveObjects { get => _activeObjects.Count; }
 
-    public int CreatedObjects { get => _objects.Count + _activeObjects.Count; }
+    public int CreatedObjects { get => _inactiveobjects.Count + _activeObjects.Count; }
 
     public ObjectPool(T prefab)
     {
@@ -25,16 +25,17 @@ public class ObjectPool<T> where T : Component
 
     public T Get()
     {
-        if (_objects.Count == 0)
+        if (_inactiveobjects.Count == 0)
         {
             Create();
         }
 
-        T getedComponent = _objects.Dequeue();
-        getedComponent.gameObject.SetActive(true);
+        T getedComponent = _inactiveobjects.Dequeue();
+        getedComponent.Activate();
         _activeObjects.Add(getedComponent);
         Geted?.Invoke(getedComponent);
         ActiveCountChanged?.Invoke();
+        getedComponent.Deactivated += Release;
         return getedComponent;
     }
 
@@ -42,19 +43,24 @@ public class ObjectPool<T> where T : Component
     {
         if (_activeObjects.Contains(component))
         {
+            component.Deactivated -= Release;
             _activeObjects.Remove(component);
-            component.gameObject.SetActive(false);
-            _objects.Enqueue(component);
+            _inactiveobjects.Enqueue(component);
             Released?.Invoke(component);
             ActiveCountChanged?.Invoke();
         }
     }
 
+    private void Release(PoollableObject component)
+    {
+        Release(component as T);
+    }
+
     private void Create()
     {
         T newComponent = MonoBehaviour.Instantiate(_prefab);
-        newComponent.gameObject.SetActive(false);
-        _objects.Enqueue(newComponent);
+        newComponent.Deactivate();
+        _inactiveobjects.Enqueue(newComponent);
         Created?.Invoke(newComponent);
         CreatedCountChanged?.Invoke();
     }

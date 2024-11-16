@@ -1,58 +1,34 @@
 using System;
 using UnityEngine;
 
-public abstract class Spawner : MonoBehaviour, IInitializeble
+public abstract class Spawner<T> : MonoBehaviour where T : PoollableObject
 {
-    private PoollableObject _prefab;
+    [SerializeField] private T _prefab;
 
-    public event Action<PoollableObject> ObjectSpawned;
+    private ObjectPool<T> _pool;
+
+    public event Action<T> ObjectSpawned;
     public event Action SpawnedObjectsChanged;
     public event Action Initialized;
 
-    public ObjectPool<PoollableObject> Pool { get; private set; }
+    public IPoolCounter PoolCounter { get => _pool; }
 
     public int SpawnedObjects { get; private set; }
 
-    protected virtual void Awake()
+    private void Awake()
     {
-        Initialize();
-    }
-
-    protected virtual void OnEnable()
-    {
-        Pool.Released += UnsubscribePool;
-    }
-
-    protected virtual void OnDisable()
-    {
-        Pool.Released -= UnsubscribePool;
-    }
-
-    protected virtual void Initialize()
-    {
-        Pool = new(_prefab);
+        _pool = new(_prefab);
         Initialized?.Invoke();
     }
 
-    protected void SetPrefab(PoollableObject newPrefab)
+    protected T Spawn(Vector3 spawnPosition)
     {
-        _prefab = newPrefab;
-    }
-
-    protected PoollableObject Spawn(Vector3 spawnPosition)
-    {
-        PoollableObject newObject = Pool.Get();
+        T newObject = _pool.Get();
         newObject.Reset();
         newObject.transform.position = spawnPosition;
-        newObject.Deactivated += Pool.Release;
         SpawnedObjects++;
         SpawnedObjectsChanged?.Invoke();
         ObjectSpawned?.Invoke(newObject);
         return newObject;
-    }
-
-    private void UnsubscribePool(PoollableObject obj)
-    {
-        obj.Deactivated -= Pool.Release;
     }
 }

@@ -27,7 +27,7 @@ public class RainbowCube : PoollableObject
             if (_isToched == false)
             {
                 _isToched = true;
-                _material.color = UnityEngine.Random.ColorHSV();
+                _material.color = Random.ColorHSV();
                 StartCoroutine(DeactivatingDelay());
             }
         }

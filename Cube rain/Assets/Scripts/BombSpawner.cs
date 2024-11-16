@@ -1,26 +1,17 @@
 using UnityEngine;
 
-public class BombSpawner : Spawner
+public class BombSpawner : Spawner<Bomb>
 {
-    [SerializeField] private Bomb _BombPrefab;
     [SerializeField] private CubeSpawner _spawner;
 
-    protected override void OnEnable()
+    private void OnEnable()
     {
-        base.OnEnable();
         _spawner.ObjectSpawned += Subscribe;
     }
 
-    protected override void OnDisable()
+    private void OnDisable()
     {
-        base.OnDisable();
         _spawner.ObjectSpawned -= Subscribe;
-    }
-
-    protected override void Initialize()
-    {
-        SetPrefab(_BombPrefab);
-        base.Initialize();
     }
 
     private void Subscribe(PoollableObject cube)

@@ -428,7 +428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1265c46189bcea4f8a8e01b0f47d268, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _BombPrefab: {fileID: 5755703861116775247, guid: 0b0ffdee0f7cef94a9c7402e6c19d045, type: 3}
+  _prefab: {fileID: 5755703861116775247, guid: 0b0ffdee0f7cef94a9c7402e6c19d045, type: 3}
   _spawner: {fileID: 1603423747}
 --- !u!4 &327939336
 Transform:
@@ -1464,6 +1464,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1545,6 +1546,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 22.02, y: 0, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c74c6f5995c53b74d87c88b27b04f6cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &991787627
 GameObject:
   m_ObjectHideFlags: 0
@@ -2063,7 +2076,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1298559395}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81c3dfcddf1b41a4b8ee71605c9ebcee, type: 3}
+  m_Script: {fileID: 11500000, guid: 5218a72252a05d645bf24494ee16a548, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _textSpawned: {fileID: 804719584}
@@ -2366,7 +2379,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0ccad09107bcd948972d3c6dca03635, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cubePrefab: {fileID: 3851253624048312009, guid: 3ca6f2c92054d0544bb9d8319082532d, type: 3}
+  _prefab: {fileID: 3851253624048312009, guid: 3ca6f2c92054d0544bb9d8319082532d, type: 3}
   _spawnRadius: 5
   _spawnRate: 0.2
 --- !u!1 &1798060333
@@ -2631,7 +2644,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2065145874}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81c3dfcddf1b41a4b8ee71605c9ebcee, type: 3}
+  m_Script: {fileID: 11500000, guid: 5030394550fcc724bac859be283292f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _textSpawned: {fileID: 1140627388}
