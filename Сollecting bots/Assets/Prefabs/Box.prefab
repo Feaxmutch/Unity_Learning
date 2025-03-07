@@ -77,9 +77,6 @@ PrefabInstance:
       addedObject: {fileID: 933569163998545759}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 701abf24a40a32740a10ac6708bd0a8a, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6625091859638177142}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 701abf24a40a32740a10ac6708bd0a8a, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 2929568866942213447}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 701abf24a40a32740a10ac6708bd0a8a, type: 3}
       insertIndex: -1
@@ -102,25 +99,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1865a88c88ab8eb4ca438b0aa832872c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6625091859638177142
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8714372009120299042}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 0
-  m_Area: 0
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 1
-  m_ApplyToChildren: 1
-  m_AffectedAgents: ffffffff
 --- !u!54 &2929568866942213447
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -167,5 +145,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.9999999, y: 1.9575398, z: 2.0965924}
-  m_Center: {x: 0, y: 0.056644972, z: 0}
+  m_Size: {x: 2, y: 1.95, z: 2}
+  m_Center: {x: 0, y: 0.04, z: 0}

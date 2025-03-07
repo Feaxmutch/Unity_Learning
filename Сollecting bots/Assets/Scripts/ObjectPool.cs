@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class ObjectPool<T> where T : Component
+public class ObjectPool<T> where T : PoollableObject
 {
     private T _prefab;
     private Queue<T> _objects = new();
@@ -17,7 +17,7 @@ public class ObjectPool<T> where T : Component
         _prefab = prefab;
     }
 
-    public Component Get()
+    public T Get()
     {
         if (_objects.Count == 0)
         {
@@ -25,39 +25,35 @@ public class ObjectPool<T> where T : Component
         }
 
         T getedComponent = _objects.Dequeue();
-        getedComponent.gameObject.SetActive(true);
+        getedComponent.Activate();
+        getedComponent.Deactivated += Release;
         _activeObjects.Add(getedComponent);
+        getedComponent.Reset();
         Geted?.Invoke(getedComponent);
         return getedComponent;
     }
 
-    public void Release(T component)
+    private void Release(PoollableObject poollableObject)
     {
-        if (_activeObjects.Contains(component))
+        if (poollableObject is T)
         {
-            _activeObjects.Remove(component);
-            component.gameObject.SetActive(false);
-            _objects.Enqueue(component);
-            Released?.Invoke(component);
-        }
-    }
+            T releasingObject = poollableObject as T;
 
-    public void ReleaseAll()
-    {
-        foreach (var activeObject in _activeObjects)
-        {
-            _objects.Enqueue(activeObject);
-            activeObject.gameObject.SetActive(false);
-            Released?.Invoke(activeObject);
+            if (_activeObjects.Contains(releasingObject))
+            {
+                _activeObjects.Remove(releasingObject);
+                releasingObject.Deactivated -= Release;
+                releasingObject.Deactivate();
+                _objects.Enqueue(releasingObject);
+                Released?.Invoke(releasingObject);
+            }
         }
-
-        _activeObjects.Clear();
     }
 
     private void Create()
     {
         T newComponent = MonoBehaviour.Instantiate(_prefab);
-        newComponent.gameObject.SetActive(false);
+        newComponent.Deactivate();
         _objects.Enqueue(newComponent);
         Created?.Invoke(newComponent);
     }
