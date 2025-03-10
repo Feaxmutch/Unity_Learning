@@ -26,7 +26,7 @@ public class ObjectPool<T> where T : PoollableObject
 
         T getedComponent = _objects.Dequeue();
         getedComponent.Activate();
-        getedComponent.Deactivated += Release;
+        getedComponent.DeactivatedThis += Release;
         _activeObjects.Add(getedComponent);
         getedComponent.Reset();
         Geted?.Invoke(getedComponent);
@@ -42,7 +42,7 @@ public class ObjectPool<T> where T : PoollableObject
             if (_activeObjects.Contains(releasingObject))
             {
                 _activeObjects.Remove(releasingObject);
-                releasingObject.Deactivated -= Release;
+                releasingObject.DeactivatedThis -= Release;
                 releasingObject.Deactivate();
                 _objects.Enqueue(releasingObject);
                 Released?.Invoke(releasingObject);

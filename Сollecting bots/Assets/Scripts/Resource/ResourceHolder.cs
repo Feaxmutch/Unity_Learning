@@ -57,12 +57,13 @@ public class ResourceHolder : MonoBehaviour
         return false;
     }
 
-    public void Drop()
+    private void Drop()
     {
         if (IsHolding)
         {
             _joint.connectedBody = null;
             _resourcesInGrapZone.Remove(_currentResource);
+            _currentResource.Deactivated -= Drop;
             _currentResource = null;
             DroppedResource?.Invoke();
         }
@@ -74,5 +75,6 @@ public class ResourceHolder : MonoBehaviour
         resource.transform.rotation = transform.rotation;
         _joint.connectedBody = resource.Rigidbody;
         _currentResource = resource;
+        _currentResource.Deactivated += Drop;
     }
 }

@@ -109,7 +109,6 @@ public class Bot : MonoBehaviour
     private void GiveResource()
     {
         MainBase.TakeResource(_resourceHolder.CurrentResource);
-        _resourceHolder.Drop();
     }
 
     private void TryGrapTarget()

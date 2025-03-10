@@ -62,8 +62,13 @@ public class Base : Building
 
     public void TakeResource(Resource resource)
     {
-        ResourcesCount++;
         resource.Deactivate();
+        AddResource();
+    }
+
+    public void AddResource()
+    {
+        ResourcesCount++;
     }
 
     private void TryBuy()
@@ -162,7 +167,6 @@ public class Base : Building
     {
         while (enabled)
         {
-            TryBuy();
             List<Bot> freeBots = _botStotage.GetSpecificBots(this, false, false);
             List<Bot> botsWdthResource = _botStotage.GetSpecificBots(this, true, false);
 

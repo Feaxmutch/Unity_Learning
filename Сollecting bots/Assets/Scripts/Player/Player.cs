@@ -1,9 +1,16 @@
+using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     private Base _selectedBase;
     private MouseTracker _mouseTracker;
+
+    public event Action Selected;
+    public event Action SelectReseted;
+
+    public Vector3 PointOfSelect => _selectedBase.transform.position;
+    public bool IsSelected => _selectedBase != null;
 
     private void Awake()
     {
@@ -18,17 +25,18 @@ public class Player : MonoBehaviour
 
             if (clickedObject.TryGetComponent(out Base @base))
             {
-                if (_selectedBase != null)
+                if (IsSelected)
                 {
                     _selectedBase.BaseBuilded -= ResetSelecting;
                 }
 
                 _selectedBase = @base;
                 _selectedBase.BaseBuilded += ResetSelecting;
+                Selected?.Invoke();
             }
             else
             {
-                if (_selectedBase != null)
+                if (IsSelected)
                 {
                     _selectedBase.BildNewBase(_mouseTracker.GetMousePositionInWorld());
                 }
@@ -44,5 +52,6 @@ public class Player : MonoBehaviour
     {
         _selectedBase.BaseBuilded -= ResetSelecting;
         _selectedBase = null;
+        SelectReseted?.Invoke();
     }
 }

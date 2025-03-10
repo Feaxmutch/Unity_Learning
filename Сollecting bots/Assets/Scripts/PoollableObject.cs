@@ -3,11 +3,12 @@ using UnityEngine;
 
 public class PoollableObject : MonoBehaviour
 {
-    public event Action<PoollableObject> Deactivated;
+    public event Action<PoollableObject> DeactivatedThis;
+    public event Action Deactivated;
 
     private void OnDisable()
     {
-        Deactivated?.Invoke(this);
+        
     }
 
     public virtual void Reset() { }
@@ -20,5 +21,7 @@ public class PoollableObject : MonoBehaviour
     public void Deactivate()
     {
         gameObject.SetActive(false);
+        DeactivatedThis?.Invoke(this);
+        Deactivated?.Invoke();
     }
 }
